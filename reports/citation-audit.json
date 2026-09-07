@@ -1,0 +1,412 @@
+{
+  "total_citations_audited": 23,
+  "adversarial_injected": 2,
+  "adversarial_purged": 2,
+  "total_citations": 21,
+  "valid_citations": 21,
+  "invalid_citations": 0,
+  "citation_accuracy": 1.0,
+  "target_accuracy": 1.0,
+  "target_met": true,
+  "citations": [
+    {
+      "citation": {
+        "evidence_id": "E1",
+        "standard": "IS 10500:2012",
+        "clause": "0",
+        "pages": "p. 1",
+        "chunk_id": "6fbb02ea-1afc-5a92-aa38-a4674bbbbcd8",
+        "document_id": "8ecc86fe-3310-5667-be5f-60e4f5646b09",
+        "relevance_score": 0.95,
+        "citation_text": "IS 10500:2012, 0, p. 1"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_10500_2012.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E2",
+        "standard": "IS 10500:2012",
+        "clause": "1",
+        "pages": "p. 1",
+        "chunk_id": "6a764fa6-c603-5d98-b3a6-2b920b9a4ef3",
+        "document_id": "8ecc86fe-3310-5667-be5f-60e4f5646b09",
+        "relevance_score": 0.94,
+        "citation_text": "IS 10500:2012, 1, p. 1"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_10500_2012.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E3",
+        "standard": "IS 10500:2012",
+        "clause": "2",
+        "pages": "p. 1",
+        "chunk_id": "a6cd8b45-6569-5fe0-bf1b-0f95b1c9c76a",
+        "document_id": "8ecc86fe-3310-5667-be5f-60e4f5646b09",
+        "relevance_score": 0.9299999999999999,
+        "citation_text": "IS 10500:2012, 2, p. 1"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_10500_2012.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E4",
+        "standard": "IS 10500:2012",
+        "clause": "4",
+        "pages": "p. 1",
+        "chunk_id": "1c1ab51c-2763-56fb-bf5d-a970d57151c4",
+        "document_id": "8ecc86fe-3310-5667-be5f-60e4f5646b09",
+        "relevance_score": 0.9199999999999999,
+        "citation_text": "IS 10500:2012, 4, p. 1"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_10500_2012.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E5",
+        "standard": "IS 12269:2015",
+        "clause": "0",
+        "pages": "p. 1",
+        "chunk_id": "da4b028e-5d34-5d0c-8897-cfd331ce4ad5",
+        "document_id": "dd295f7f-b047-5429-b753-2bb0fbc7e12c",
+        "relevance_score": 0.9099999999999999,
+        "citation_text": "IS 12269:2015, 0, p. 1"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_12269_2015.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E6",
+        "standard": "IS 12269:2015",
+        "clause": "53",
+        "pages": "p. 1",
+        "chunk_id": "0173b31c-7d50-517e-95ed-50dc32249b02",
+        "document_id": "dd295f7f-b047-5429-b753-2bb0fbc7e12c",
+        "relevance_score": 0.8999999999999999,
+        "citation_text": "IS 12269:2015, 53, p. 1"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_12269_2015.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E7",
+        "standard": "IS 12269:2015",
+        "clause": "1",
+        "pages": "p. 1",
+        "chunk_id": "72851a63-c1b5-58c3-840b-83659be52da0",
+        "document_id": "dd295f7f-b047-5429-b753-2bb0fbc7e12c",
+        "relevance_score": 0.8899999999999999,
+        "citation_text": "IS 12269:2015, 1, p. 1"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_12269_2015.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E8",
+        "standard": "IS 12269:2015",
+        "clause": "2",
+        "pages": "p. 1",
+        "chunk_id": "cc6ae35b-0a8a-5cde-97b0-a419579c02a6",
+        "document_id": "dd295f7f-b047-5429-b753-2bb0fbc7e12c",
+        "relevance_score": 0.8799999999999999,
+        "citation_text": "IS 12269:2015, 2, p. 1"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_12269_2015.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E9",
+        "standard": "IS 12269:2015",
+        "clause": "3",
+        "pages": "p. 1",
+        "chunk_id": "5fbaccd4-5e1c-55dc-9bd7-e5ac339ef14e",
+        "document_id": "dd295f7f-b047-5429-b753-2bb0fbc7e12c",
+        "relevance_score": 0.87,
+        "citation_text": "IS 12269:2015, 3, p. 1"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_12269_2015.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E10",
+        "standard": "IS 12269:2015",
+        "clause": "4",
+        "pages": "p. 1",
+        "chunk_id": "1dce3730-7ae3-5ba8-95bb-f01ee730b057",
+        "document_id": "dd295f7f-b047-5429-b753-2bb0fbc7e12c",
+        "relevance_score": 0.86,
+        "citation_text": "IS 12269:2015, 4, p. 1"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_12269_2015.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E11",
+        "standard": "IS 12269:2015",
+        "clause": "4.1",
+        "pages": "pp. 1\u20132",
+        "chunk_id": "bd36986a-4a85-52b3-b14c-64c16ba95d17",
+        "document_id": "dd295f7f-b047-5429-b753-2bb0fbc7e12c",
+        "relevance_score": 0.85,
+        "citation_text": "IS 12269:2015, 4.1, p. 1"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_12269_2015.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E12",
+        "standard": "IS 12269:2015",
+        "clause": "5",
+        "pages": "p. 2",
+        "chunk_id": "a7e87235-ddc0-52a4-afbe-332fbd66ba01",
+        "document_id": "dd295f7f-b047-5429-b753-2bb0fbc7e12c",
+        "relevance_score": 0.84,
+        "citation_text": "IS 12269:2015, 5, p. 2"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_12269_2015.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E13",
+        "standard": "IS 12269:2015",
+        "clause": "6",
+        "pages": "p. 2",
+        "chunk_id": "75ce7759-9d68-5eff-a578-887888570485",
+        "document_id": "dd295f7f-b047-5429-b753-2bb0fbc7e12c",
+        "relevance_score": 0.83,
+        "citation_text": "IS 12269:2015, 6, p. 2"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_12269_2015.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E14",
+        "standard": "IS 1786:2008",
+        "clause": "0",
+        "pages": "p. 1",
+        "chunk_id": "4696039c-2d97-54c7-9da9-9ea921255737",
+        "document_id": "3ffacd03-cc28-57c0-a352-5f55de492df6",
+        "relevance_score": 0.82,
+        "citation_text": "IS 1786:2008, 0, p. 1"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_1786_2008.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E15",
+        "standard": "IS 1786:2008",
+        "clause": "1",
+        "pages": "p. 1",
+        "chunk_id": "bfe4160c-01d9-56db-a019-7c99b6258b1f",
+        "document_id": "3ffacd03-cc28-57c0-a352-5f55de492df6",
+        "relevance_score": 0.8099999999999999,
+        "citation_text": "IS 1786:2008, 1, p. 1"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_1786_2008.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E16",
+        "standard": "IS 1786:2008",
+        "clause": "2",
+        "pages": "pp. 1\u20132",
+        "chunk_id": "2202150c-c451-5650-ad84-bb540475ad6f",
+        "document_id": "3ffacd03-cc28-57c0-a352-5f55de492df6",
+        "relevance_score": 0.7999999999999999,
+        "citation_text": "IS 1786:2008, 2, p. 1"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_1786_2008.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E17",
+        "standard": "IS 1786:2008",
+        "clause": "4",
+        "pages": "p. 2",
+        "chunk_id": "95839c18-307c-509d-add5-5789d97d8d0d",
+        "document_id": "3ffacd03-cc28-57c0-a352-5f55de492df6",
+        "relevance_score": 0.7899999999999999,
+        "citation_text": "IS 1786:2008, 4, p. 2"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_1786_2008.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E18",
+        "standard": "IS 1786:2008",
+        "clause": "8",
+        "pages": "p. 2",
+        "chunk_id": "c867ada5-b6f0-54e6-936d-b91cbd533cdb",
+        "document_id": "3ffacd03-cc28-57c0-a352-5f55de492df6",
+        "relevance_score": 0.7799999999999999,
+        "citation_text": "IS 1786:2008, 8, p. 2"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_1786_2008.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E19",
+        "standard": "IS 9873 (Part 1):2019",
+        "clause": "0",
+        "pages": "p. 1",
+        "chunk_id": "db1d5f5b-edc5-59c8-a136-46bbeb4d6dbe",
+        "document_id": "c5ddcacd-9f8f-5b8d-99da-e3710a3e736b",
+        "relevance_score": 0.77,
+        "citation_text": "IS 9873 (Part 1):2019, 0, p. 1"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_9873_part1_2019.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E20",
+        "standard": "IS 9873 (Part 1):2019",
+        "clause": "1",
+        "pages": "p. 1",
+        "chunk_id": "273d6a0d-c8af-518c-b61f-4eec6569f64d",
+        "document_id": "c5ddcacd-9f8f-5b8d-99da-e3710a3e736b",
+        "relevance_score": 0.76,
+        "citation_text": "IS 9873 (Part 1):2019, 1, p. 1"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_9873_part1_2019.pdf",
+      "is_authoritative": true
+    },
+    {
+      "citation": {
+        "evidence_id": "E21",
+        "standard": "IS 9873 (Part 1):2019",
+        "clause": "4",
+        "pages": "p. 1",
+        "chunk_id": "170f97c6-6dad-5e9b-865c-85348c7e79be",
+        "document_id": "c5ddcacd-9f8f-5b8d-99da-e3710a3e736b",
+        "relevance_score": 0.75,
+        "citation_text": "IS 9873 (Part 1):2019, 4, p. 1"
+      },
+      "document_id_verified": true,
+      "chunk_id_verified": true,
+      "standard_verified": true,
+      "clause_verified": true,
+      "chunk_content_present": true,
+      "source_file": "is_9873_part1_2019.pdf",
+      "is_authoritative": true
+    }
+  ]
+}

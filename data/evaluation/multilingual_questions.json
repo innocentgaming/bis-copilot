@@ -1,0 +1,66 @@
+[
+  {
+    "id": "ML-01",
+    "language": "en",
+    "language_name": "English",
+    "question": "What is the acceptable pH range and turbidity limit for drinking water under IS 10500:2012?",
+    "standard": "IS 10500:2012",
+    "clause": "4.1",
+    "expected_facts": {
+      "ph_range": "6.5 to 8.5",
+      "turbidity_limit": "1 NTU (max 5 NTU)",
+      "technical_identifiers": ["IS 10500:2012", "Clause 4.1", "NTU"]
+    }
+  },
+  {
+    "id": "ML-02",
+    "language": "hi",
+    "language_name": "Hindi (हिन्दी)",
+    "question": "IS 10500:2012 के अनुसार पीने के पानी का स्वीकार्य pH मान और टर्बिडिटी सीमा क्या है?",
+    "standard": "IS 10500:2012",
+    "clause": "4.1",
+    "expected_facts": {
+      "ph_range": "6.5 से 8.5",
+      "turbidity_limit": "1 NTU (अधिकतम 5 NTU)",
+      "technical_identifiers": ["IS 10500:2012", "Clause 4.1", "NTU", "mg/l"]
+    }
+  },
+  {
+    "id": "ML-03",
+    "language": "mr",
+    "language_name": "Marathi (मराठी)",
+    "question": "IS 10500:2012 नुसार पिण्याच्या पाण्याचे स्वीकार्य pH मूल्य आणि गढूळपणा (Turbidity) मर्यादा काय आहे?",
+    "standard": "IS 10500:2012",
+    "clause": "4.1",
+    "expected_facts": {
+      "ph_range": "6.5 ते 8.5",
+      "turbidity_limit": "1 NTU (जास्तीत जास्त 5 NTU)",
+      "technical_identifiers": ["IS 10500:2012", "Clause 4.1", "NTU", "mg/l"]
+    }
+  },
+  {
+    "id": "ML-04",
+    "language": "hi",
+    "language_name": "Hindi (हिन्दी)",
+    "question": "IS 12269:2015 के अनुसार 53 ग्रेड ओपीसी सीमेंट की 28 दिनों की न्यूनतम संपीडन शक्ति क्या है?",
+    "standard": "IS 12269:2015",
+    "clause": "6.2",
+    "expected_facts": {
+      "compressive_strength_28d": "53 MPa",
+      "technical_identifiers": ["IS 12269:2015", "Clause 6.2", "53 MPa", "N/mm²"]
+    }
+  },
+  {
+    "id": "ML-05",
+    "language": "mr",
+    "language_name": "Marathi (मराठी)",
+    "question": "IS 1786:2008 नुसार Fe 500D स्टील बारची किमान प्रूफ स्ट्रेस आणि तन्यता सामर्थ्य (Tensile Strength) किती असावी?",
+    "standard": "IS 1786:2008",
+    "clause": "8.1",
+    "expected_facts": {
+      "proof_stress": "500.0 N/mm² (MPa)",
+      "tensile_strength": "565.0 N/mm²",
+      "technical_identifiers": ["IS 1786:2008", "Fe 500D", "Clause 8.1", "N/mm²", "MPa"]
+    }
+  }
+]

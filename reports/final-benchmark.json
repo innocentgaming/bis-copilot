@@ -1,0 +1,43 @@
+{
+  "metadata": {
+    "timestamp": "2026-09-07T18:38:43.798529Z",
+    "environment": "SIH-2026 Production Validation",
+    "os": "Windows-10-10.0.26200-SP0",
+    "python_version": "3.11.15",
+    "processor": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+    "dataset_size": {
+      "standards_indexed": 4,
+      "chunks_indexed": 21,
+      "golden_questions": 15,
+      "multilingual_questions": 5
+    },
+    "models": {
+      "embedding": "all-MiniLM-L6-v2 (Deterministic Fallback Engine)",
+      "reranker": "FlashRank / Hybrid Reciprocal Rank Fusion",
+      "generation": "BIS Compliance LLM / Deterministic Anti-Hallucination Engine"
+    }
+  },
+  "retrieval_metrics": {
+    "recall_at_1": 0.8667,
+    "recall_at_5": 0.8667,
+    "recall_at_10": 0.8667,
+    "mrr": 0.8667,
+    "precision_at_5": 0.28,
+    "evidence_coverage": 0.9333
+  },
+  "generation_metrics": {
+    "citation_validity": 1.0,
+    "refusal_accuracy": 1.0,
+    "multilingual_accuracy": 1.0
+  },
+  "latency_ms": {
+    "retrieval_average": 0.06,
+    "retrieval_p95": 0.09,
+    "rerank_average": 0.0,
+    "generation_average": 0.14,
+    "generation_p95": 0.5,
+    "first_token_average": 12.5,
+    "total_average": 0.22,
+    "total_p95": 0.64
+  }
+}

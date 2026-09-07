@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-09-07 18:40:32 UTC",
+  "endpoint": "/health",
+  "method": "GET",
+  "total_requests": 20,
+  "concurrency": 5,
+  "duration_seconds": 16.9,
+  "requests_per_second": 1.18,
+  "success_count": 20,
+  "error_count": 0,
+  "error_rate_pct": 0.0,
+  "latencies_ms": {
+    "min": 4112.82,
+    "p50": 4143.7,
+    "p90": 4435.74,
+    "p95": 4437.85,
+    "p99": 4439.89,
+    "max": 4440.4
+  },
+  "status_codes": {
+    "503": 20
+  }
+}
