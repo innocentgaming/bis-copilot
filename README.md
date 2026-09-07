@@ -4,7 +4,7 @@
 
 ### *Enterprise-Grade Anti-Hallucinatory Intelligence Platform for Indian Standards, Conformity Assessment & Testing Laboratories*
 
-[![Smart India Hackathon 2024](https://img.shields.io/badge/SIH%202024-Problem%20Statement%2026107-orange?style=for-the-badge&logo=target)](https://www.sih.gov.in/)
+[![Smart India Hackathon 2026](https://img.shields.io/badge/SIH%202026-Problem%20Statement%2026107-orange?style=for-the-badge&logo=target)](https://www.sih.gov.in/)
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI%200.110-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Next.js 14](https://img.shields.io/badge/Frontend-Next.js%2014-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org)
 [![PostgreSQL 16](https://img.shields.io/badge/Database-PostgreSQL%2016%20%2B%20pgvector-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://github.com/pgvector/pgvector)
@@ -30,7 +30,7 @@ Navigating thousands of complex, cross-referenced **Indian Standards (IS)**, tec
 
 Standard generative AI models regularly **hallucinate** non-existent standard numbers, invent tolerances, and misquote testing methods.
 
-The **BIS Quality & Compliance Copilot** (SIH 2024 Problem Statement: **26107**) solves this crisis by enforcing an **anti-hallucinatory evidence hierarchy**:
+The **BIS Quality & Compliance Copilot** (SIH 2026 Problem Statement: **26107**) solves this crisis by enforcing an **anti-hallucinatory evidence hierarchy**:
 - 🛡️ **100% Citation Validity**: Every claim is verified against authentic extracted BIS source chunks before response delivery.
 - 🎯 **Strict Safe Refusal**: Rejects fabricated queries, out-of-domain prompts, and invalid standards with zero hallucinated requirements.
 - 🌐 **Multilingual Synthesis**: Seamless answers in **Hindi (हिन्दी)** and **Marathi (मराठी)** with strict preservation of Latin technical identifiers (`IS 10500:2012`, `53.0 MPa`, `1 NTU`).
@@ -310,5 +310,5 @@ bis-copilot/
 GitHub: [@innocentgaming](https://github.com/innocentgaming)  
 Email: [aadiyadav1706@gmail.com](mailto:aadiyadav1706@gmail.com)
 
-*Smart India Hackathon (SIH 2024) — Problem Statement 26107*  
+*Smart India Hackathon (SIH 2026) — Problem Statement 26107*  
 *Developed for the Bureau of Indian Standards (BIS)*
