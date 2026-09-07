@@ -95,11 +95,11 @@ def run_demo_health_check() -> bool:
     pgvector_ready = False
     if db_online:
         try:
-            from backend.app.database.connection import get_sync_connection
-            with get_sync_connection() as conn:
-                with conn.cursor() as cur:
-                    cur.execute("SELECT extname FROM pg_extension WHERE extname = 'vector';")
-                    pgvector_ready = bool(cur.fetchone())
+            from backend.app.database.connection import sync_engine
+            from sqlalchemy import text
+            with sync_engine.connect() as conn:
+                res = conn.execute(text("SELECT 1 FROM pg_extension WHERE extname = 'vector'"))
+                pgvector_ready = res.scalar_one_or_none() is not None
         except Exception:
             pgvector_ready = False
     dash.check(
@@ -114,11 +114,11 @@ def run_demo_health_check() -> bool:
     migrations_ready = False
     if db_online:
         try:
-            from backend.app.database.connection import get_sync_connection
-            with get_sync_connection() as conn:
-                with conn.cursor() as cur:
-                    cur.execute("SELECT table_name FROM information_schema.tables WHERE table_name = 'alembic_version';")
-                    migrations_ready = bool(cur.fetchone())
+            from backend.app.database.connection import sync_engine
+            from sqlalchemy import text
+            with sync_engine.connect() as conn:
+                res = conn.execute(text("SELECT 1 FROM information_schema.tables WHERE table_name = 'alembic_version'"))
+                migrations_ready = res.scalar_one_or_none() is not None
         except Exception:
             migrations_ready = False
     dash.check(

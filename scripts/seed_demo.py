@@ -57,7 +57,7 @@ def seed_demo_data(if_empty: bool = False):
                 "name": "BIS Senior Auditor",
                 "email": "auditor@bis.gov.in",
                 "password": "auditor123",
-                "role": "auditor",
+                "role": "user",
                 "preferred_language": "en",
             },
             {
@@ -85,7 +85,6 @@ def seed_demo_data(if_empty: bool = False):
                     password_hash=hash_password(u["password"]),
                     role=u["role"],
                     preferred_language=u["preferred_language"],
-                    is_active=True,
                 )
                 session.add(user_obj)
                 session.flush()
@@ -242,10 +241,9 @@ def seed_demo_data(if_empty: bool = False):
                     document_id=doc.id,
                     standard_number=s_data["standard_number"],
                     title=s_data["std_title"],
-                    description=s_data["description"],
-                    domain=s_data["domain"],
-                    edition=s_data["edition"],
-                    year=s_data["year"],
+                    scope=s_data.get("description"),
+                    edition=s_data.get("edition"),
+                    publication_date=date(s_data["year"], 1, 1),
                     status="active",
                 )
                 session.add(std)
@@ -281,13 +279,16 @@ def seed_demo_data(if_empty: bool = False):
                     vector = embedder.embed_query(c_info["content"])
                     chunk_obj = DocumentChunk(
                         document_id=doc.id,
+                        standard_id=std.id,
                         clause_id=clause_obj.id,
                         chunk_index=0,
                         content=c_info["content"],
-                        token_count=len(c_info["content"].split()),
                         page_start=c_info["page_start"],
                         page_end=c_info["page_end"],
-                        section_path=f"{s_data['standard_number']} > Clause {c_info['clause_number']}",
+                        metadata_json={
+                            "token_count": len(c_info["content"].split()),
+                            "section_path": f"{s_data['standard_number']} > Clause {c_info['clause_number']}",
+                        },
                         embedding=vector,
                     )
                     session.add(chunk_obj)
@@ -344,18 +345,17 @@ def seed_demo_data(if_empty: bool = False):
         ]
 
         for l_info in labs_data:
-            lab_obj = session.query(Laboratory).filter_by(code=l_info["code"]).first()
+            lab_obj = session.query(Laboratory).filter_by(name=l_info["name"]).first()
             if not lab_obj:
                 lab_obj = Laboratory(
                     name=l_info["name"],
-                    code=l_info["code"],
                     city=l_info["city"],
                     state=l_info["state"],
                     address=l_info["address"],
-                    contact_email=l_info["contact_email"],
-                    phone=l_info["phone"],
-                    accreditation_status=l_info["accreditation_status"],
-                    is_active=l_info["is_active"],
+                    pincode="110001",
+                    email=l_info.get("contact_email"),
+                    phone=l_info.get("phone"),
+                    status="active",
                 )
                 session.add(lab_obj)
                 session.flush()
@@ -398,7 +398,7 @@ def seed_demo_data(if_empty: bool = False):
                     name=sch["name"],
                     code=sch["code"],
                     description=sch["description"],
-                    is_mandatory=sch["is_mandatory"],
+                    status="active",
                 )
                 session.add(sch_obj)
                 session.flush()
