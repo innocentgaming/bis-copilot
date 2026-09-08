@@ -47,4 +47,11 @@ export const standardsApi = {
   }): Promise<SearchResponseData> {
     return apiClient.post<SearchResponseData>("/search", params);
   },
+
+  lookupISNumber(query: string, limit: number = 10): Promise<import("@/types/is_lookup").ISLookupResponseData> {
+    const encoded = encodeURIComponent(query.trim());
+    return apiClient.get<import("@/types/is_lookup").ISLookupResponseData>(
+      `/standards/lookup?q=${encoded}&limit=${limit}`
+    );
+  },
 };

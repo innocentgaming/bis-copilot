@@ -34,7 +34,7 @@ export function Sidebar({ onItemClick }: SidebarProps) {
     { label: "Dashboard", href: "/", icon: Home },
     { label: "AI Compliance Assistant", href: "/chat", icon: Bot, badge: "AI" },
     { label: "Conversations", href: "/conversations", icon: History },
-    { label: "Standards Catalog", href: "/standards", icon: BookOpen },
+    { label: "Know Your Standards", href: "/standards", icon: BookOpen },
     { label: "Hybrid Search", href: "/search", icon: FileSearch },
     { label: "Testing Laboratories", href: "/laboratories", icon: Microscope },
     { label: "Certification Schemes", href: "/certification", icon: ShieldCheck },

@@ -17,14 +17,57 @@ from backend.app.api.schemas.common import (
     ResponseEnvelope,
     ResponseMeta,
 )
+from backend.app.api.schemas.is_lookup import ISLookupResponse
 from backend.app.api.schemas.standards import (
     ClauseSummary,
     StandardDetail,
     StandardSummary,
 )
+from backend.app.services.is_lookup_service import ISLookupService
 from backend.app.services.standard_service import StandardService
 
 router = APIRouter(prefix="/standards", tags=["Standards"])
+
+
+@router.get(
+    "/lookup",
+    response_model=ResponseEnvelope[ISLookupResponse],
+    summary="Lookup Indian Standard by IS Number (query parameter)",
+)
+async def lookup_standard_query(
+    q: Optional[str] = Query(None, alias="q", description="IS Number (e.g. IS 1910-6:1993, 1910-6, IS 356)"),
+    is_number: Optional[str] = Query(None, alias="is_number", description="Alternative parameter for IS Number"),
+    limit: int = Query(10, ge=1, le=50, description="Max close matches to return"),
+    req_id: str = Depends(get_request_id),
+):
+    """Lookup standard specification by IS Number with formatting tolerance and close matches."""
+    query_str = q or is_number or ""
+    result = ISLookupService.lookup(query_str=query_str, max_close_matches=limit)
+    return ResponseEnvelope(
+        success=True,
+        data=result,
+        meta=ResponseMeta(request_id=req_id),
+    )
+
+
+@router.get(
+    "/lookup/{is_number:path}",
+    response_model=ResponseEnvelope[ISLookupResponse],
+    summary="Lookup Indian Standard by IS Number (path parameter)",
+)
+async def lookup_standard_path(
+    is_number: str,
+    limit: int = Query(10, ge=1, le=50, description="Max close matches to return"),
+    req_id: str = Depends(get_request_id),
+):
+    """Lookup standard specification by IS Number with formatting tolerance and close matches."""
+    result = ISLookupService.lookup(query_str=is_number, max_close_matches=limit)
+    return ResponseEnvelope(
+        success=True,
+        data=result,
+        meta=ResponseMeta(request_id=req_id),
+    )
+
 
 
 @router.get(

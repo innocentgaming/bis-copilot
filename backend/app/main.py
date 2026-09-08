@@ -65,8 +65,9 @@ app.add_middleware(RequestContextMiddleware)
 # 3. Global Exception Handlers formatting common ResponseEnvelope
 register_exception_handlers(app)
 
-# 4. Mount API v1 Routes
+# 4. Mount API Routes (v1 and alias /api)
 app.include_router(api_router, prefix="/api/v1")
+app.include_router(api_router, prefix="/api")
 
 
 @app.get(
