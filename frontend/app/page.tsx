@@ -38,6 +38,7 @@ import {
   BadgeCheck,
 } from "lucide-react";
 import { ISLookupSection } from "@/components/standards/ISLookupSection";
+import { OutcomesAndImpactSection } from "@/components/home/OutcomesAndImpactSection";
 import { VoiceModal } from "@/components/multimodal/VoiceModal";
 import { VisionModal } from "@/components/multimodal/VisionModal";
 import { SUPPORTED_LANGUAGES } from "@/types/bis_platform";
@@ -647,7 +648,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 8. PLATFORM STATS & TRUST INDICATORS */}
+      {/* 8. EXPECTED OUTCOMES & IMPACT SECTION */}
+      <OutcomesAndImpactSection />
+
+      {/* 9. PLATFORM STATS & TRUST INDICATORS */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { label: "Active Indian Standards", val: "7,000+", icon: BookOpen, color: "text-blue-600" },
