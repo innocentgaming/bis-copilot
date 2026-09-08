@@ -97,6 +97,10 @@ export function TopBar({ onMenuClick }: TopBarProps) {
         <Link href="/about" className="hover:text-blue-600 transition">
           Architecture
         </Link>
+        <Link href="/security" className="hover:text-blue-600 transition flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
+          <ShieldCheck className="w-3.5 h-3.5" />
+          <span>Security</span>
+        </Link>
       </nav>
 
       {/* Right: Language Dropdown & Ask BIS AI Button */}

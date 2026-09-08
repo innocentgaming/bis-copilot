@@ -49,6 +49,7 @@ export function Sidebar({ onItemClick }: SidebarProps) {
     { label: "File a Complaint", href: "/complaints", icon: AlertTriangle },
     { label: "Track Status", href: "/applications", icon: Clock },
     { label: "Document AI Assistant", href: "/documents", icon: FileText, badge: "OCR" },
+    { label: "Security & Privacy", href: "/security", icon: ShieldCheck, badge: "TRUST" },
     { label: "Citizen Dashboard", href: "/dashboard", icon: BarChart3 },
   ];
 

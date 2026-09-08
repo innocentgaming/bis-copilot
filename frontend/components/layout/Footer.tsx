@@ -218,6 +218,12 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/security" className="hover:text-blue-400 transition text-emerald-400 font-medium flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  Security &amp; Privacy
+                </Link>
+              </li>
+              <li>
                 <Link href="/contact" className="hover:text-blue-400 transition">
                   Helpdesk & Contact
                 </Link>
@@ -243,6 +249,7 @@ export function Footer() {
             <span>© 2026 BIS AI – Intelligent Standards & Consumer Assistance. All rights reserved.</span>
             <div className="flex items-center gap-4">
               <Link href="/about" className="hover:text-slate-300">About</Link>
+              <Link href="/security" className="hover:text-slate-300 text-emerald-400">Security</Link>
               <Link href="/faq" className="hover:text-slate-300">FAQ</Link>
               <Link href="/contact" className="hover:text-slate-300">Contact</Link>
             </div>

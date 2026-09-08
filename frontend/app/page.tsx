@@ -718,6 +718,73 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* 9.5 ENTERPRISE SECURITY & PRIVACY ARCHITECTURE */}
+      <section className="p-8 md:p-10 rounded-3xl bg-slate-900 text-white border border-slate-800 shadow-xl space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Zero-Trust Security &amp; DPDP 2023 Compliant</span>
+            </div>
+            <h2 className="text-2xl md:text-3xl font-black tracking-tight">
+              Enterprise Security, Privacy &amp; Source Validation
+            </h2>
+            <p className="text-xs md:text-sm text-slate-400 max-w-2xl mt-1">
+              Engineered with 100% citation grounding verification, SHA-256 cryptographic document checksums, sliding-window rate limiting, and 3-tier Role-Based Access Control.
+            </p>
+          </div>
+          <Link
+            href="/security"
+            className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition flex items-center gap-2 shrink-0"
+          >
+            <span>Explore Trust Center</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+          <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2">
+            <div className="text-emerald-400 font-black text-sm flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4" />
+              <span>100% Citation Validity</span>
+            </div>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              Every AI assertion maps to an official gazetted standard chunk. Ungrounded claims are automatically purged.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2">
+            <div className="text-blue-400 font-black text-sm flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4" />
+              <span>SHA-256 Checksums</span>
+            </div>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              Cryptographic hash verification ensures document integrity across all 7,000+ indexed Indian Standards.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2">
+            <div className="text-amber-400 font-black text-sm flex items-center gap-1.5">
+              <Cpu className="w-4 h-4" />
+              <span>Controlled Access &amp; RBAC</span>
+            </div>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              Strict 3-tier authorization (Citizen, Auditor, Admin) guarded by HMAC-SHA256 JWT tokens and IP rate limiters.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2">
+            <div className="text-purple-400 font-black text-sm flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4" />
+              <span>Privacy &amp; DPDP 2023</span>
+            </div>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              Automatic PII/credential redaction, TLS 1.3 encryption in transit, and AES-256 encrypted storage.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* 10. HIGH IMPACT CTA */}
       <section className="p-8 md:p-14 rounded-3xl bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-800 text-white shadow-2xl text-center space-y-6">
         <div className="space-y-3 max-w-2xl mx-auto">
