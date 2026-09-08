@@ -45,6 +45,21 @@ REQUIRED JSON OUTPUT FORMAT:
 """
 
 
+LANGUAGE_NAMES = {
+    "en": "English",
+    "hi": "Hindi (हिन्दी)",
+    "ta": "Tamil (தமிழ்)",
+    "te": "Telugu (తెలుగు)",
+    "bn": "Bengali (বাংলা)",
+    "mr": "Marathi (मराठी)",
+    "gu": "Gujarati (ગુજરાતી)",
+    "kn": "Kannada (ಕನ್ನಡ)",
+    "ml": "Malayalam (മലയാളം)",
+    "pa": "Punjabi (ਪੰਜਾਬੀ)",
+    "or": "Odia (ଓଡ଼ିଆ)",
+}
+
+
 class PromptBuilder:
     """Constructs strict, delimited prompt contexts for LLM generation."""
 
@@ -77,11 +92,14 @@ class PromptBuilder:
         if not evidence_blocks:
             evidence_blocks = "No authoritative evidence chunks retrieved from the database."
 
+        lang_name = LANGUAGE_NAMES.get(language, "English")
         lang_instruction = ""
-        if language == "hi":
-            lang_instruction = "IMPORTANT: Provide the response narrative in Hindi (हिन्दी) while keeping standard numbers, clause numbers, and units in English/Latin.\n"
-        elif language == "mr":
-            lang_instruction = "IMPORTANT: Provide the response narrative in Marathi (मराठी) while keeping standard numbers, clause numbers, and units in English/Latin.\n"
+        if language != "en":
+            lang_instruction = (
+                f"CRITICAL MULTILINGUAL DIRECTIVE:\n"
+                f"You MUST generate the entire answer text and explanations in {lang_name}.\n"
+                f"Keep Indian Standard numbers (e.g. 'IS 1293:2019'), clause numbers, technical units, and citations in English/Latin notation.\n\n"
+            )
 
         prompt = (
             f"{lang_instruction}"
@@ -91,7 +109,7 @@ class PromptBuilder:
             f"----------------------------------------\n\n"
             f"QUESTION:\n{context.query}\n\n"
             f"Detected Intent: {context.intent}\n"
-            f"Target Language: {language}\n\n"
+            f"Target Language: {language} ({lang_name})\n\n"
             f"Answer the question using ONLY the evidence provided above. Return ONLY the specified JSON object."
         )
         return prompt

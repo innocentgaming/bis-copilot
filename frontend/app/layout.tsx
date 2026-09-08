@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth/context";
+import { LanguageProvider } from "@/lib/language/context";
 import { ToastProvider } from "@/components/common/Toast";
 import { AppShell } from "@/components/layout/AppShell";
 
 export const metadata: Metadata = {
-  title: "BIS Copilot — AI Compliance Assistant for Indian Standards (SIH 26107)",
+  title: "BIS AI COPILOT — Intelligent Standards & Consumer Guidance Assistant",
   description:
     "Authoritative, evidence-grounded AI Assistant platform for Bureau of Indian Standards (BIS) regulations, IS standards, testing laboratories, and conformity assessment.",
 };
@@ -19,9 +20,11 @@ export default function RootLayout({
     <html lang="en">
       <body className="font-sans">
         <AuthProvider>
-          <ToastProvider>
-            <AppShell>{children}</AppShell>
-          </ToastProvider>
+          <LanguageProvider>
+            <ToastProvider>
+              <AppShell>{children}</AppShell>
+            </ToastProvider>
+          </LanguageProvider>
         </AuthProvider>
       </body>
     </html>

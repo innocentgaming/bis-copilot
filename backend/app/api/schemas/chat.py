@@ -17,7 +17,7 @@ class ChatFilters(BaseModel):
 class ChatRequest(BaseModel):
     query: str = Field(..., min_length=1, max_length=2000, description="Question or compliance inquiry")
     conversation_id: Optional[uuid.UUID] = Field(None, description="Existing conversation UUID")
-    language: str = Field("en", pattern="^(en|hi|mr)$", description="Response language ('en', 'hi', 'mr')")
+    language: str = Field("en", pattern="^(en|hi|ta|te|bn|mr|gu|kn|ml|pa|or)$", description="Response language (en, hi, ta, te, bn, mr, gu, kn, ml, pa, or)")
     filters: Optional[ChatFilters] = Field(None, description="Optional metadata constraints")
 
 

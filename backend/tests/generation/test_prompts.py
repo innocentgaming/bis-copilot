@@ -30,11 +30,12 @@ def test_format_evidence_block():
 
 def test_build_user_prompt_multilingual():
     ctx = EvidenceContext(query="What is the test voltage?", intent="test_method")
-    prompt_hi = PromptBuilder.build_user_prompt(ctx, language="hi")
-    assert "Hindi (हिन्दी)" in prompt_hi
-
-    prompt_mr = PromptBuilder.build_user_prompt(ctx, language="mr")
-    assert "Marathi (मराठी)" in prompt_mr
+    all_langs = ["en", "hi", "ta", "te", "bn", "mr", "gu", "kn", "ml", "pa", "or"]
+    for lang in all_langs:
+        prompt = PromptBuilder.build_user_prompt(ctx, language=lang)
+        assert f"Target Language: {lang}" in prompt
+        if lang != "en":
+            assert "CRITICAL MULTILINGUAL DIRECTIVE:" in prompt
 
 
 def test_build_regeneration_prompt():

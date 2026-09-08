@@ -36,4 +36,4 @@ class ConversationDetail(BaseModel):
 
 class ConversationCreateRequest(BaseModel):
     title: Optional[str] = Field("New Conversation", max_length=255)
-    language: str = Field("en", pattern="^(en|hi|mr)$")
+    language: str = Field("en", pattern="^(en|hi|ta|te|bn|mr|gu|kn|ml|pa|or)$")

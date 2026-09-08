@@ -1,7 +1,7 @@
 "use client";
-
 import React, { useState, useRef, useEffect } from "react";
 import { ArrowUp, Camera, Mic, Paperclip, Sparkles } from "lucide-react";
+import { useLanguage } from "@/lib/language/context";
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -10,6 +10,20 @@ interface ChatInputProps {
   onVoiceClick?: () => void;
   onVisionClick?: () => void;
 }
+
+const PLACEHOLDERS: Record<string, string> = {
+  en: "Ask anything about BIS, Indian Standards, ISI Mark, or compliance...",
+  hi: "बीआईएस, भारतीय मानक, आईएसआई मार्क या प्रमाणन के बारे में पूछें...",
+  ta: "BIS, இந்திய தரநிலைகள், ISI முத்திரை அல்லது இணக்கம் பற்றி கேளுங்கள்...",
+  te: "BIS, భారతీయ ప్రమాణాలు, ISI మార్క్ లేదా ధృవీకరణ గురించి అడగండి...",
+  bn: "বিআইএস, ভারতীয় মানদণ্ড, আইএসআই মার্ক বা সম্মতি সম্পর্কে জিজ্ঞাসা করুন...",
+  mr: "बीआयएस, भारतीय मानके, आयएसआय मार्क किंवा नियमांबद्दल विचारा...",
+  gu: "BIS, ભારતીય ધોરણો, ISI માર્ક અથવા પાલન વિશે પૂછો...",
+  kn: "BIS, ಭಾರತೀಯ ಮಾನದಂಡಗಳು, ISI ಮಾರ್ಕ್ ಅಥವಾ ಅನುಸರಣೆ ಬಗ್ಗೆ ಕೇಳಿ...",
+  ml: "BIS, ഇന്ത്യൻ മാനദണ്ഡങ്ങൾ, ISI മാർക്ക് എന്നിവയെക്കുറിച്ച് ചോദിക്കുക...",
+  pa: "BIS, ਭਾਰਤੀ ਮਾਪਦੰਡ, ISI ਮਾਰਕ ਜਾਂ ਪਾਲਣਾ ਬਾਰੇ ਪੁੱਛੋ...",
+  or: "BIS, ଭାରତୀୟ ମାନକ, ISI ମାର୍କ କିମ୍ବା ନିୟମାବଳୀ ବିଷୟରେ ପଚାରନ୍ତୁ...",
+};
 
 const MAX_CHARS = 2000;
 
@@ -20,6 +34,7 @@ export function ChatInput({
   onVoiceClick,
   onVisionClick,
 }: ChatInputProps) {
+  const { language } = useLanguage();
   const [text, setText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -71,7 +86,7 @@ export function ChatInput({
           }
         }}
         onKeyDown={handleKeyDown}
-        placeholder="Ask anything about BIS, Indian Standards, ISI Mark, or compliance..."
+        placeholder={PLACEHOLDERS[language] || PLACEHOLDERS.en}
         className="w-full bg-transparent border-0 resize-none text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none pr-12 min-h-[44px] max-h-[180px] leading-relaxed"
       />
 

@@ -17,7 +17,7 @@ class EvaluationQuestionDetail(BaseModel):
 
 class EvaluationRunTriggerRequest(BaseModel):
     sample_size: Optional[int] = Field(None, ge=1, le=100, description="Optional question limit")
-    language: Optional[str] = Field(None, pattern="^(en|hi|mr)$")
+    language: Optional[str] = Field(None, pattern="^(en|hi|ta|te|bn|mr|gu|kn|ml|pa|or)$")
 
 
 class EvaluationRunDetail(BaseModel):

@@ -11,7 +11,6 @@ import { IndianLanguageCode } from "@/types/bis_platform";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState<IndianLanguageCode>("en");
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-950 font-sans text-slate-900 dark:text-slate-100 antialiased">
@@ -28,11 +27,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Main Content Area */}
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-        <TopBar
-          onMenuClick={() => setMobileNavOpen(true)}
-          selectedLanguage={selectedLanguage}
-          onLanguageChange={setSelectedLanguage}
-        />
+        <TopBar onMenuClick={() => setMobileNavOpen(true)} />
         <main className="flex-1 overflow-y-auto flex flex-col justify-between bg-slate-50/50 dark:bg-slate-950 pb-16 md:pb-0">
           <div className="p-4 md:p-8">
             <ErrorBoundary>

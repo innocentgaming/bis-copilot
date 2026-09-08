@@ -28,6 +28,8 @@ import {
 } from "lucide-react";
 import { chatApi } from "@/lib/api/chat";
 import { AnswerCitation, ChatRequest, ConversationDetail } from "@/types/chat";
+import { IndianLanguageCode, SUPPORTED_LANGUAGES } from "@/types/bis_platform";
+import { useLanguage } from "@/lib/language/context";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { ChatMessage, MessageItem } from "@/components/chat/ChatMessage";
 import { ThinkingIndicator } from "@/components/chat/ThinkingIndicator";
@@ -68,6 +70,7 @@ function AssistantContent() {
 
   const { isAuthenticated } = useAuth();
   const { error: toastError } = useToast();
+  const { language, setLanguage, activeLanguage } = useLanguage();
 
   const [messages, setMessages] = useState<MessageItem[]>([]);
   const [conversations, setConversations] = useState<ConversationDetail[]>([]);
@@ -75,9 +78,12 @@ function AssistantContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [selectedCitation, setSelectedCitation] = useState<AnswerCitation | null>(null);
-  const [language, setLanguage] = useState<"en" | "hi" | "mr">(
-    (langParam === "hi" || langParam === "mr") ? langParam : "en"
-  );
+
+  useEffect(() => {
+    if (langParam && SUPPORTED_LANGUAGES.some((l) => l.code === langParam)) {
+      setLanguage(langParam as IndianLanguageCode);
+    }
+  }, [langParam, setLanguage]);
 
   // Multimodal modals
   const [voiceOpen, setVoiceOpen] = useState(false);
@@ -366,10 +372,26 @@ function AssistantContent() {
           </div>
 
           <div className="flex items-center gap-2">
+            <div className="relative flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg px-2 py-1 text-xs border border-slate-200 dark:border-slate-700">
+              <Globe className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 mr-1.5 shrink-0" />
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value as IndianLanguageCode)}
+                className="bg-transparent text-slate-800 dark:text-slate-200 font-semibold focus:outline-hidden text-xs cursor-pointer pr-1"
+                aria-label="Select response language"
+              >
+                {SUPPORTED_LANGUAGES.map((lang) => (
+                  <option key={lang.code} value={lang.code} className="bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200">
+                    {lang.nativeLabel} ({lang.label})
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <button
               onClick={() => setVoiceOpen(true)}
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-400 hover:bg-amber-500/20 transition"
-              title="Voice Assistant (Hindi / English)"
+              title="Voice Assistant (Multilingual)"
             >
               <Mic className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Voice</span>

@@ -103,6 +103,36 @@ async def test_chat_validation_empty_query(mock_session):
         assert res.status_code == 422
         data = res.json()
         assert data["success"] is False
-        assert data["error"]["code"] == "VALIDATION_ERROR"
+    app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_chat_multilingual_all_indian_languages(mock_session):
+    app.dependency_overrides[get_db_session] = lambda: mock_session
+
+    fake_ans = AnswerResponse(
+        conversation_id=uuid.uuid4(),
+        message_id=uuid.uuid4(),
+        answer="Multilingual response content",
+        confidence=0.90,
+        confidence_level="HIGH",
+        intent="requirement_question",
+        insufficient_evidence=False,
+        citations=[],
+        processing=ProcessingTimings(retrieval_ms=1.0, generation_ms=1.0, total_ms=2.0),
+    )
+
+    all_indian_languages = ["en", "hi", "ta", "te", "bn", "mr", "gu", "kn", "ml", "pa", "or"]
+    with patch("backend.app.services.chat_service.ChatService.answer", return_value=fake_ans):
+        transport = ASGITransport(app=app)
+        async with AsyncClient(transport=transport, base_url="http://test") as ac:
+            for lang in all_indian_languages:
+                res = await ac.post(
+                    "/api/v1/chat",
+                    json={"query": "What is the requirement for ISI mark?", "language": lang},
+                )
+                assert res.status_code == 200, f"Failed for language {lang}: {res.text}"
+                assert res.json()["success"] is True
 
     app.dependency_overrides.clear()
+

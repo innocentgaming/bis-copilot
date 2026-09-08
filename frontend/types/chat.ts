@@ -26,10 +26,12 @@ export interface ChatFilters {
   clause_number?: string | null;
 }
 
+import { IndianLanguageCode } from "./bis_platform";
+
 export interface ChatRequest {
   query: string;
   conversation_id?: string | null;
-  language?: "en" | "hi" | "mr";
+  language?: IndianLanguageCode | string;
   filters?: ChatFilters | null;
 }
 

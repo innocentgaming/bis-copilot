@@ -9,7 +9,7 @@ class UserRegisterRequest(BaseModel):
     name: str = Field(..., min_length=1, max_length=255, description="Full name of the user")
     email: str = Field(..., pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$", description="Unique email address")
     password: str = Field(..., min_length=8, description="Password (at least 8 characters)")
-    preferred_language: str = Field("en", pattern="^(en|hi|mr)$", description="Preferred language (en, hi, mr)")
+    preferred_language: str = Field("en", pattern="^(en|hi|ta|te|bn|mr|gu|kn|ml|pa|or)$", description="Preferred language (en, hi, ta, te, bn, mr, gu, kn, ml, pa, or)")
 
 
 class UserLoginRequest(BaseModel):

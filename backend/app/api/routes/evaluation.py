@@ -26,7 +26,7 @@ router = APIRouter(prefix="/evaluation", tags=["Evaluation (Admin)"])
     summary="List evaluation ground-truth benchmark questions (Admin only)",
 )
 async def list_evaluation_questions(
-    language: Optional[str] = Query(None, pattern="^(en|hi|mr)$"),
+    language: Optional[str] = Query(None, pattern="^(en|hi|ta|te|bn|mr|gu|kn|ml|pa|or)$"),
     session: AsyncSession = Depends(get_db_session),
     admin_user: User = Depends(require_admin),
     req_id: str = Depends(get_request_id),

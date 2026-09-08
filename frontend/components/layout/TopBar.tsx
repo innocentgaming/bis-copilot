@@ -13,20 +13,16 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { apiClient } from "@/lib/api/client";
-import { IndianLanguageCode, SUPPORTED_LANGUAGES } from "@/types/bis_platform";
+import { SUPPORTED_LANGUAGES } from "@/types/bis_platform";
+import { useLanguage } from "@/lib/language/context";
 
 interface TopBarProps {
   onMenuClick: () => void;
-  selectedLanguage: IndianLanguageCode;
-  onLanguageChange: (lang: IndianLanguageCode) => void;
 }
 
-export function TopBar({
-  onMenuClick,
-  selectedLanguage,
-  onLanguageChange,
-}: TopBarProps) {
+export function TopBar({ onMenuClick }: TopBarProps) {
   const router = useRouter();
+  const { language, setLanguage, activeLanguage } = useLanguage();
   const [dbStatus, setDbStatus] = useState<"ok" | "degraded" | "checking">("checking");
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
 
@@ -46,8 +42,7 @@ export function TopBar({
     checkHealth();
   }, []);
 
-  const activeLangObj =
-    SUPPORTED_LANGUAGES.find((l) => l.code === selectedLanguage) || SUPPORTED_LANGUAGES[0];
+
 
   return (
     <header className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 md:px-6 flex items-center justify-between z-20 shrink-0 sticky top-0 shadow-xs">
@@ -136,7 +131,7 @@ export function TopBar({
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 transition"
           >
             <Languages className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-            <span>{activeLangObj.nativeLabel}</span>
+            <span>{activeLanguage.nativeLabel}</span>
             <ChevronDown className="w-3 h-3 text-slate-400" />
           </button>
 
@@ -150,11 +145,11 @@ export function TopBar({
                   <button
                     key={lang.code}
                     onClick={() => {
-                      onLanguageChange(lang.code);
+                      setLanguage(lang.code);
                       setLangDropdownOpen(false);
                     }}
                     className={`w-full text-left px-3 py-1.5 text-xs flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800 transition ${
-                      selectedLanguage === lang.code
+                      language === lang.code
                         ? "text-blue-600 dark:text-blue-400 font-bold bg-blue-50/50 dark:bg-blue-950/40"
                         : "text-slate-700 dark:text-slate-300"
                     }`}
