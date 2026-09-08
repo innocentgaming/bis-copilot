@@ -1,17 +1,25 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { ArrowUp, CornerDownLeft, Sparkles } from "lucide-react";
+import { ArrowUp, Camera, Mic, Paperclip, Sparkles } from "lucide-react";
 
 interface ChatInputProps {
   onSend: (message: string) => void;
   disabled?: boolean;
   isLoading?: boolean;
+  onVoiceClick?: () => void;
+  onVisionClick?: () => void;
 }
 
 const MAX_CHARS = 2000;
 
-export function ChatInput({ onSend, disabled, isLoading }: ChatInputProps) {
+export function ChatInput({
+  onSend,
+  disabled,
+  isLoading,
+  onVoiceClick,
+  onVisionClick,
+}: ChatInputProps) {
   const [text, setText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -63,28 +71,47 @@ export function ChatInput({ onSend, disabled, isLoading }: ChatInputProps) {
           }
         }}
         onKeyDown={handleKeyDown}
-        placeholder="Ask compliance question (e.g. What is the breaking load under Clause 5.2 in IS 99999?)..."
-        className="w-full bg-transparent border-0 resize-none text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden pr-12 min-h-[44px] max-h-[180px] leading-relaxed"
+        placeholder="Ask anything about BIS, Indian Standards, ISI Mark, or compliance..."
+        className="w-full bg-transparent border-0 resize-none text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none pr-12 min-h-[44px] max-h-[180px] leading-relaxed"
       />
 
       <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400">
         <div className="flex items-center gap-2">
-          <span className="hidden sm:inline">
+          {/* Multimodal Quick Input Buttons */}
+          {onVoiceClick && (
+            <button
+              type="button"
+              onClick={onVoiceClick}
+              className="p-1.5 rounded-lg text-slate-500 hover:text-amber-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+              title="Voice Speech Query (Hindi / English)"
+            >
+              <Mic className="w-4 h-4" />
+            </button>
+          )}
+
+          {onVisionClick && (
+            <button
+              type="button"
+              onClick={onVisionClick}
+              className="p-1.5 rounded-lg text-slate-500 hover:text-blue-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+              title="Upload / Scan Product Label or ISI Mark"
+            >
+              <Camera className="w-4 h-4" />
+            </button>
+          )}
+
+          <span className="hidden sm:inline text-[11px] text-slate-400">
             <kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono text-[10px]">
               Enter
             </kbd>{" "}
-            to send,{" "}
-            <kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono text-[10px]">
-              Shift+Enter
-            </kbd>{" "}
-            for newline
+            to send
           </span>
-          <span>•</span>
+          <span className="hidden sm:inline">•</span>
           <span
             className={
               text.length >= MAX_CHARS - 100
                 ? "text-rose-500 font-semibold"
-                : "text-slate-400"
+                : "text-slate-400 text-[11px]"
             }
           >
             {text.length}/{MAX_CHARS}

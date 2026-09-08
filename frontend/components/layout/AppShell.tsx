@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import { MobileNav } from "./MobileNav";
+import { Footer } from "./Footer";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -30,12 +31,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           selectedLanguage={selectedLanguage}
           onLanguageChange={setSelectedLanguage}
         />
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50/50 dark:bg-slate-950">
-          <ErrorBoundary>
-            <div className="max-w-7xl mx-auto w-full">
-              {children}
-            </div>
-          </ErrorBoundary>
+        <main className="flex-1 overflow-y-auto flex flex-col justify-between bg-slate-50/50 dark:bg-slate-950">
+          <div className="p-4 md:p-8">
+            <ErrorBoundary>
+              <div className="max-w-7xl mx-auto w-full">
+                {children}
+              </div>
+            </ErrorBoundary>
+          </div>
+          <Footer />
         </main>
       </div>
     </div>

@@ -15,6 +15,12 @@ from backend.app.api.routes.health import router as health_router
 from backend.app.api.routes.laboratories import router as laboratories_router
 from backend.app.api.routes.search import router as search_router
 from backend.app.api.routes.standards import router as standards_router
+from backend.app.api.routes.bis_services import router as bis_services_router
+from backend.app.api.routes.applications import router as applications_router
+from backend.app.api.routes.compliance import router as compliance_router
+from backend.app.api.routes.faqs import router as faqs_router
+from backend.app.api.routes.notifications import router as notifications_router
+from backend.app.api.routes.multimodal import router as multimodal_router
 
 api_router = APIRouter()
 
@@ -29,5 +35,11 @@ api_router.include_router(documents_router)
 api_router.include_router(laboratories_router)
 api_router.include_router(certification_router)
 api_router.include_router(evaluation_router)
+api_router.include_router(bis_services_router)
+api_router.include_router(applications_router)
+api_router.include_router(compliance_router)
+api_router.include_router(faqs_router)
+api_router.include_router(notifications_router)
+api_router.include_router(multimodal_router)
 api_router.include_router(admin_router)
 api_router.include_router(health_router)

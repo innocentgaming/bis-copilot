@@ -13,12 +13,18 @@ import {
   Layers,
   Microscope,
   Presentation,
-  ShieldAlert,
   ShieldCheck,
   Sparkles,
+  Mic,
+  Camera,
+  Globe2,
+  Clock,
+  Search,
+  Upload,
 } from "lucide-react";
 import { adminApi } from "@/lib/api/admin";
 import { AdminStatisticsResponse } from "@/types/admin";
+import { Footer } from "@/components/layout/Footer";
 
 export default function LandingDashboardPage() {
   const router = useRouter();
@@ -38,197 +44,241 @@ export default function LandingDashboardPage() {
 
   const capabilities = [
     {
-      title: "Standards Intelligence",
+      title: "Know Your Standards",
       description:
-        "Full-text and semantic vector indexing over Indian Standards (IS), cross-referencing amendments, editions, and schedules.",
+        "Instant IS Number lookup across 7,000+ Indian Standards covering all 14 sectional divisions with full scope and applicability.",
       icon: BookOpen,
       href: "/standards",
-      color: "from-blue-500 to-indigo-600",
+      color: "from-blue-600 to-indigo-700",
+      badge: "7,000+ IS",
     },
     {
-      title: "Clause-Level Traceability",
+      title: "AI Compliance Assistant",
       description:
-        "Precise clause hierarchy (5 -> 5.1 -> 5.1.1, Annexes) ensuring answers directly pinpoint the exact legal clause.",
-      icon: Layers,
-      href: "/standards",
+        "Evidence-grounded RAG chatbot answering technical queries with exact clause citations, units, and non-hallucinatory boundaries.",
+      icon: Bot,
+      href: "/assistant",
       color: "from-amber-500 to-amber-700",
+      badge: "24×7 AI",
     },
     {
-      title: "Strict Evidence & Citations",
+      title: "BIS Services Directory",
       description:
-        "Every claim carries verifiable citations with page boundaries and verbatim excerpts. Zero tolerance for hallucinations.",
-      icon: ShieldCheck,
-      href: "/chat",
-      color: "from-emerald-500 to-teal-700",
+        "Explore ISI Mark Scheme-I, Compulsory Registration (CRS), Hallmarking, FMCS, and Tatkal licensing turnarounds.",
+      icon: Layers,
+      href: "/services",
+      color: "from-emerald-600 to-teal-700",
+      badge: "Schemes",
     },
     {
-      title: "Testing & Laboratory Match",
+      title: "Testing Laboratories Network",
       description:
-        "Locate BIS-accredited testing laboratories across India filtered by required standard capabilities and parameters.",
+        "Locate accredited testing laboratories across India filtered by Indian Standard numbers, test parameters, and regions.",
       icon: Microscope,
       href: "/laboratories",
-      color: "from-violet-500 to-purple-700",
+      color: "from-violet-600 to-purple-700",
+      badge: "Labs",
     },
     {
-      title: "Certification & Conformity",
+      title: "Application Status Tracking",
       description:
-        "Navigate mandatory certification schemes including ISI Mark Scheme-I, CRS, and Hallmarking regulations.",
-      icon: FileCheck2,
-      href: "/certification",
-      color: "from-sky-500 to-blue-700",
+        "Real-time multi-stage status tracking and inspection timeline for manufacturing and import licences.",
+      icon: Clock,
+      href: "/applications",
+      color: "from-sky-600 to-blue-700",
+      badge: "Timeline",
     },
+    {
+      title: "Document AI Inspector",
+      description:
+        "Upload specification PDFs, factory manuals, or test reports to extract requirements, dates, fees, and audit checklists.",
+      icon: Upload,
+      href: "/documents",
+      color: "from-rose-600 to-pink-700",
+      badge: "OCR AI",
+    },
+  ];
+
+  const trustIndicators = [
+    { title: "24×7 AI Assistance", desc: "Always available guidance", icon: Bot },
+    { title: "Source-backed Answers", desc: "Every response cited to IS clauses", icon: ShieldCheck },
+    { title: "Multilingual Support", desc: "Hindi, English & Regional languages", icon: Globe2 },
+    { title: "Voice & Image Queries", desc: "Speech & product label inspection", icon: Camera },
   ];
 
   const sampleQuestions = [
     {
-      q: "What is the minimum breaking load and test temperature under Clause 5.2 in IS 99999?",
+      q: "What is the minimum breaking load and test temperature under Clause 5.2 in IS 1786?",
       desc: "Tests quantitative physical parameter extraction with exact units and temperature limits.",
     },
     {
-      q: "Which testing methods are specified in Annex A for structural component sampling?",
-      desc: "Demonstrates multi-page Annex retrieval, sample size formulas, and testing procedures.",
+      q: "How do I apply for an ISI mark licence under Scheme-I for electric sockets?",
+      desc: "Demonstrates end-to-end application procedure, required factory documents, and fee schedule.",
     },
     {
-      q: "What are the mandatory marking and labeling requirements for certified products?",
-      desc: "Checks compliance packaging requirements and standard certification scheme rules.",
+      q: "What are the mandatory testing methods in IS 10500 for packaged drinking water?",
+      desc: "Retrieves microbiological limits, chemical parameters, and testing laboratory requirements.",
     },
     {
-      q: "What is the recipe for baking chocolate cake?",
-      desc: "Demonstrates safe refusal with 'Insufficient Evidence' guard when query is outside Indian Standards.",
+      q: "What is the 6-digit HUID code and how does a consumer verify gold hallmark purity?",
+      desc: "Explains BIS Hallmarking regulations, laser mark decoding, and BIS Care verification.",
     },
   ];
-
-  const handleSampleClick = (question: string) => {
-    router.push(`/chat?q=${encodeURIComponent(question)}`);
-  };
 
   return (
     <div className="space-y-12 pb-12">
       {/* Hero Section */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white p-8 md:p-14 border border-slate-800 shadow-xl">
-        <div className="relative z-10 max-w-3xl space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 text-xs font-semibold">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Smart India Hackathon (SIH Problem Statement 26107)</span>
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 text-white p-8 md:p-14 shadow-2xl border border-slate-800/80">
+        {/* Glow accents */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          {/* Left Column Text */}
+          <div className="lg:col-span-7 space-y-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+              <Sparkles className="w-4 h-4 text-amber-400" />
+              <span>Smart India Hackathon 2024 — Problem Statement 107</span>
+            </div>
+
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-[1.15]">
+              Your Intelligent Assistant for{" "}
+              <span className="bg-gradient-to-r from-amber-400 via-white to-emerald-400 bg-clip-text text-transparent">
+                Indian Standards & BIS Services
+              </span>
+            </h1>
+
+            <p className="text-sm md:text-base text-slate-300 max-w-xl leading-relaxed">
+              Get instant, accurate, and trusted guidance for 7,000+ Indian Standards,
+              ISI Mark certifications, Compulsory Registration (CRS), Hallmarking, and compliance — powered by anti-hallucinatory AI.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex flex-wrap items-center gap-3.5 pt-2">
+              <Link
+                href="/assistant"
+                className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold text-sm shadow-xl hover:shadow-amber-500/20 transition-all flex items-center gap-2"
+              >
+                <Bot className="w-4 h-4" />
+                <span>Ask AI Assistant</span>
+              </Link>
+
+              <Link
+                href="/standards"
+                className="px-6 py-3.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 text-white font-bold text-sm shadow-md transition-all flex items-center gap-2"
+              >
+                <BookOpen className="w-4 h-4 text-amber-400" />
+                <span>Explore Standards</span>
+              </Link>
+            </div>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
-            AI-Powered Indian Standards <br className="hidden sm:inline" />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-400 via-amber-200 to-amber-500">
-              Compliance Assistant
-            </span>
-          </h1>
+          {/* Right Column Visual Card */}
+          <div className="lg:col-span-5 relative">
+            <div className="p-6 rounded-2xl bg-slate-900/90 backdrop-blur-md border border-slate-700/80 shadow-2xl space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-rose-500" />
+                  <div className="w-3 h-3 rounded-full bg-amber-500" />
+                  <div className="w-3 h-3 rounded-full bg-emerald-500" />
+                </div>
+                <span className="text-[11px] font-mono text-slate-400">
+                  BIS Copilot Live Engine
+                </span>
+              </div>
 
-          <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl font-normal">
-            Find requirements, clauses, testing methods, certification information and laboratory guidance using evidence-backed answers strictly grounded in authoritative Bureau of Indian Standards documents.
-          </p>
+              {/* Chat Simulation */}
+              <div className="space-y-3 text-xs">
+                <div className="p-3 rounded-xl bg-slate-800/80 text-slate-200 border border-slate-700/60 flex items-start gap-2">
+                  <span className="font-bold text-amber-400 shrink-0">User:</span>
+                  <span>What is the breaking load under Clause 5.2 in IS 1786?</span>
+                </div>
 
-          <div className="pt-2 flex flex-wrap items-center gap-3 sm:gap-4">
-            <Link
-              href="/chat"
-              className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/20 transition transform active:scale-98"
-            >
-              <Bot className="w-4 h-4" />
-              <span>Ask the Compliance Assistant</span>
-              <ArrowRight className="w-4 h-4 ml-1" />
-            </Link>
-
-            <Link
-              href="/standards"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-white font-medium text-sm border border-slate-700 transition"
-            >
-              <BookOpen className="w-4 h-4 text-slate-400" />
-              <span>Explore Standards Catalog</span>
-            </Link>
-
-            <Link
-              href="/demo"
-              className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-semibold text-sm border border-amber-500/30 transition"
-            >
-              <Presentation className="w-4 h-4" />
-              <span>SIH Demo Guide</span>
-            </Link>
+                <div className="p-3.5 rounded-xl bg-gradient-to-br from-amber-500/10 to-indigo-500/10 border border-amber-500/20 space-y-2 text-slate-200">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-emerald-400 flex items-center gap-1">
+                      <Bot className="w-3.5 h-3.5" /> BIS AI Assistant
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">
+                      High Confidence
+                    </span>
+                  </div>
+                  <p className="leading-relaxed text-[11px]">
+                    Under <strong>Clause 5.2 of IS 1786:2008</strong>, high strength deformed steel bars Fe 500 must maintain a minimum proof stress of <strong>500 N/mm²</strong> with tensile strength $\ge$ 545 N/mm².
+                  </p>
+                  <div className="pt-1.5 border-t border-slate-800 flex items-center gap-2 text-[10px] text-slate-400">
+                    <span className="font-mono text-amber-300">Source: IS 1786:2008 (Page 4, Clause 5.2)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Decorative background grid */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Trust Indicators Bar */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10 pt-8 border-t border-slate-800/80 text-slate-300 text-xs">
+          {trustIndicators.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <div key={i} className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-slate-800/80 text-amber-400 border border-slate-700/80 shrink-0">
+                  <Icon className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-white text-xs leading-tight">
+                    {item.title}
+                  </h4>
+                  <p className="text-[11px] text-slate-400">{item.desc}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </section>
 
-      {/* Metrics Strip */}
-      {stats && (
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
-              Indexed Standards
-            </span>
-            <span className="text-2xl font-black text-slate-900 dark:text-white mt-1 block">
-              {stats.volumes.standards}
-            </span>
-          </div>
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
-              Extracted Clauses
-            </span>
-            <span className="text-2xl font-black text-slate-900 dark:text-white mt-1 block">
-              {stats.volumes.clauses}
-            </span>
-          </div>
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
-              Indexed Knowledge Chunks
-            </span>
-            <span className="text-2xl font-black text-slate-900 dark:text-white mt-1 block">
-              {stats.volumes.chunks}
-            </span>
-          </div>
-          <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
-              User Satisfaction
-            </span>
-            <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1 block">
-              {Math.round(stats.feedback.satisfaction_rate * 100)}%
-            </span>
-          </div>
-        </section>
-      )}
-
-      {/* Core Capabilities */}
+      {/* Capabilities Section */}
       <section className="space-y-6">
-        <div>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
-            Compliance Intelligence Capabilities
+        <div className="space-y-1 text-center max-w-2xl mx-auto">
+          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            Complete Digital Ecosystem for Indian Standards
           </h2>
-          <p className="text-sm text-slate-500 mt-1">
-            Engineered specifically to fulfill SIH Problem Statement 26107 with high evidence fidelity.
+          <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
+            Engineered specifically to solve SIH Problem Statement 107 with enterprise-grade accuracy.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {capabilities.map((cap, i) => {
             const Icon = cap.icon;
             return (
               <Link
                 key={i}
                 href={cap.href}
-                className="group p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-500/80 hover:shadow-md transition flex flex-col justify-between"
+                className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-amber-500/50 hover:shadow-lg transition-all group flex flex-col justify-between space-y-4"
               >
                 <div className="space-y-3">
-                  <div
-                    className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cap.color} text-white flex items-center justify-center shadow-xs shrink-0`}
-                  >
-                    <Icon className="w-5 h-5" />
+                  <div className="flex items-center justify-between">
+                    <div
+                      className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cap.color} text-white flex items-center justify-center shadow-md`}
+                    >
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                      {cap.badge}
+                    </span>
                   </div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-amber-600 transition">
+
+                  <h3 className="font-bold text-base text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors">
                     {cap.title}
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                     {cap.description}
                   </p>
                 </div>
 
-                <div className="pt-4 mt-2 border-t border-slate-100 dark:border-slate-800/60 flex items-center text-xs font-semibold text-amber-600 group-hover:translate-x-0.5 transition">
-                  <span>Explore</span>
+                <div className="flex items-center text-xs font-semibold text-amber-600 dark:text-amber-400 group-hover:translate-x-1 transition-transform">
+                  <span>Explore Feature</span>
                   <ArrowRight className="w-3.5 h-3.5 ml-1" />
                 </div>
               </Link>
@@ -237,37 +287,40 @@ export default function LandingDashboardPage() {
         </div>
       </section>
 
-      {/* Sample Compliance Inquiries */}
-      <section className="p-6 md:p-8 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-6">
-        <div>
-          <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-            Example Compliance Inquiries
+      {/* Sample Evaluation Prompts Section */}
+      <section className="p-8 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-6">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400">
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            Empirical Evaluation Benchmarks
+          </div>
+          <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">
+            Try Technical Grounding Inquiries
           </h3>
-          <p className="text-xs text-slate-500 mt-1">
-            Click any prompt to launch a live compliance inquiry against the Phase 5 backend API.
-          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {sampleQuestions.map((sq, i) => (
-            <button
-              key={i}
-              onClick={() => handleSampleClick(sq.q)}
-              className="text-left p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 hover:border-amber-500 hover:bg-white dark:hover:bg-slate-900 transition group space-y-2"
+          {sampleQuestions.map((q, idx) => (
+            <Link
+              key={idx}
+              href={`/assistant?q=${encodeURIComponent(q.q)}`}
+              className="p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 hover:border-amber-500/40 transition group space-y-1.5 block"
             >
-              <div className="flex items-start justify-between gap-3">
-                <span className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-amber-600 transition leading-snug">
-                  &ldquo;{sq.q}&rdquo;
+              <div className="flex items-start justify-between gap-2">
+                <span className="font-semibold text-xs text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors">
+                  &quot;{q.q}&quot;
                 </span>
-                <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-amber-600 group-hover:translate-x-0.5 transition shrink-0 mt-0.5" />
+                <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-500 shrink-0 mt-0.5" />
               </div>
-              <p className="text-xs text-slate-500 leading-normal">
-                {sq.desc}
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                {q.desc}
               </p>
-            </button>
+            </Link>
           ))}
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 }

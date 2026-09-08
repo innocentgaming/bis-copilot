@@ -54,6 +54,12 @@ EXPECTED_TABLES = {
     "hallmarking_info",
     "evaluation_questions",
     "evaluation_runs",
+    "bis_services",
+    "applications",
+    "application_status_history",
+    "compliance_records",
+    "faqs",
+    "notifications",
 }
 
 
@@ -61,12 +67,12 @@ EXPECTED_TABLES = {
 # 1. ORM & SCHEMA VALIDATION TESTS (Offline / Metadata Verified)
 # ============================================================================
 
-def test_all_20_tables_registered_in_metadata():
-    """Verify all 20 required Phase 1 logical entities are present in Base.metadata."""
+def test_all_tables_registered_in_metadata():
+    """Verify all required logical entities are present in Base.metadata."""
     registered_tables = set(Base.metadata.tables.keys())
     missing_tables = EXPECTED_TABLES - registered_tables
     assert not missing_tables, f"Missing tables in metadata: {missing_tables}"
-    assert len(registered_tables) == 20
+    assert len(registered_tables) == len(EXPECTED_TABLES)
 
 
 def test_uuid_primary_keys():
