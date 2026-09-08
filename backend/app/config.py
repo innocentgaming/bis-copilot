@@ -1,5 +1,6 @@
 from functools import lru_cache
 from typing import Optional
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -22,6 +23,28 @@ class Settings(BaseSettings):
     # Database URLs
     DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/bis_copilot"
     SYNC_DATABASE_URL: str = "postgresql+psycopg2://postgres:postgres@localhost:5432/bis_copilot"
+
+    @field_validator("DATABASE_URL", mode="after")
+    @classmethod
+    def assemble_async_db_url(cls, v: str) -> str:
+        if v.startswith("postgres://"):
+            v = v.replace("postgres://", "postgresql+asyncpg://", 1)
+        elif v.startswith("postgresql://") and not v.startswith("postgresql+"):
+            v = v.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return v
+
+    @field_validator("SYNC_DATABASE_URL", mode="after")
+    @classmethod
+    def assemble_sync_db_url(cls, v: str, info) -> str:
+        if not v or v == "postgresql+psycopg2://postgres:postgres@localhost:5432/bis_copilot":
+            db_url = info.data.get("DATABASE_URL", "")
+            if db_url and "localhost" not in db_url:
+                v = db_url.replace("postgresql+asyncpg://", "postgresql+psycopg2://", 1)
+        if v.startswith("postgres://"):
+            v = v.replace("postgres://", "postgresql+psycopg2://", 1)
+        elif v.startswith("postgresql://") and not v.startswith("postgresql+"):
+            v = v.replace("postgresql://", "postgresql+psycopg2://", 1)
+        return v
 
     # Vector embedding dimension and model
     EMBEDDING_MODEL: str = "BAAI/bge-m3"
