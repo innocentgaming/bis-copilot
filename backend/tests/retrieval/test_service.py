@@ -153,3 +153,18 @@ async def test_service_low_confidence_status(service):
 
             assert response.status == RetrievalStatus.LOW_CONFIDENCE
             assert len(response.results) == 1
+
+
+@pytest.mark.asyncio
+async def test_service_catalog_lookup_for_is_number(service):
+    with patch("backend.app.retrieval.service.VectorSearcher.search", return_value=[]):
+        with patch("backend.app.retrieval.service.KeywordSearcher.search", return_value=[]):
+            req = RetrievalRequest(query="IS 1921-3:2016")
+            response = await service.retrieve(req)
+
+            assert response.status == RetrievalStatus.SUCCESS
+            assert len(response.results) >= 1
+            assert "IS 1921-3:2016" in response.results[0].content
+            assert len(response.evidence) >= 1
+            assert response.evidence[0].standard_number == "IS 1921-3:2016"
+

@@ -91,22 +91,55 @@ class DeterministicLLMProvider(LLMProvider):
 
         # Extract clean statement from evidence content
         content_lines = [l.strip() for l in primary["content"].split("\n") if l.strip()]
-        first_line = content_lines[0] if content_lines else primary["content"]
+        has_metadata = any(l.startswith(("Title:", "Sectional Division:", "Status:", "Year Notified:", "Section:")) for l in content_lines)
+        if has_metadata:
+            meta_dict = {}
+            for l in content_lines:
+                if ":" in l:
+                    k, v = l.split(":", 1)
+                    meta_dict[k.strip()] = v.strip()
+            title = meta_dict.get("Title", "")
+            section = meta_dict.get("Sectional Division", meta_dict.get("Section", ""))
+            year = meta_dict.get("Year Notified", meta_dict.get("Year", ""))
+            status = meta_dict.get("Status", "Active")
+            scope = meta_dict.get("Scope & Description", meta_dict.get("Scope", ""))
+            applicable = meta_dict.get("Applicable To", "")
+
+            if lang == "hi":
+                first_line = (
+                    f"{primary['standard']} ({title}) {section} प्रभाग के अंतर्गत एक भारतीय मानक है। "
+                    f"स्थिति: {status} (अधिसूचना वर्ष: {year})। "
+                    f"विस्तार: {scope or applicable or 'उत्पाद अनुरूपता एवं गुणवत्ता विनिर्देश'}।"
+                )
+            elif lang == "mr":
+                first_line = (
+                    f"{primary['standard']} ({title}) हे {section} विभागांतर्गत भारतीय मानक आहे. "
+                    f"स्थिती: {status} (वर्ष: {year}). "
+                    f"व्याप्ती: {scope or applicable or 'उत्पादन गुणवत्ता आणि नियम'}."
+                )
+            else:
+                first_line = (
+                    f"{primary['standard']} is titled '{title}', published under the {section} Sectional Division "
+                    f"with current status '{status}' (Notified: {year}). "
+                    f"Scope: {scope or applicable or 'Product conformity assessment and safety specifications'}."
+                )
+        else:
+            first_line = content_lines[0] if content_lines else primary["content"]
 
         if lang == "hi":
             answer_text = (
-                f"{primary['standard']} के {primary['clause']} के अनुसार: {first_line} "
-                f"विस्तृत जानकारी के लिए आधिकारिक दस्तावेज देखें。"
+                f"{primary['standard']} के अनुसार: {first_line} "
+                f"विस्तृत जानकारी के लिए आधिकारिक बीआईएस दस्तावेज देखें।"
             )
         elif lang == "mr":
             answer_text = (
-                f"{primary['standard']} च्या {primary['clause']} नुसार: {first_line} "
-                f"सविस्तर माहितीसाठी अधिकृत दस्तऐवज पहा."
+                f"{primary['standard']} नुसार: {first_line} "
+                f"सविस्तर माहितीसाठी अधिकृत बीआयएस दस्तऐवज पहा."
             )
         else:
             answer_text = (
-                f"According to {primary['standard']}, {primary['clause']}: {first_line}. "
-                f"Requirements must be verified against the official standard document."
+                f"According to the official BIS Standards repository: {first_line} "
+                f"Verify requirements and conformity procedures against the latest gazetted specification."
             )
 
         # If a second evidence chunk exists, incorporate it

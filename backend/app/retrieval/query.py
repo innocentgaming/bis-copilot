@@ -6,8 +6,11 @@ from typing import Dict, Optional, Tuple
 
 from backend.app.retrieval.exceptions import QueryValidationError
 
-# Regex to detect Indian Standard numbers, e.g. 'IS 1293:2019', 'IS 1234', 'IS/ISO 9001'
-IS_REGEX = re.compile(r"\b(IS(?:/[A-Z0-9]+)?\s+\d+(?:(?:\s*:\s*|\s+Part\s+\d+\s*:\s*)\d{4})?)\b", re.IGNORECASE)
+# Regex to detect Indian Standard numbers, e.g. 'IS 1921-3:2016', 'IS 1910-6:1993', 'IS 1293:2019', 'IS/ISO 9001'
+IS_REGEX = re.compile(
+    r"\b(IS(?:/[A-Z0-9]+)?\s*[-/]?\s*\d+(?:[-/]\d+)*(?:\s*Part\s*\d+)?(?:\s*:\s*\d{4})?)\b",
+    re.IGNORECASE,
+)
 
 # Regex to detect clause numbers, e.g. 'clause 5.2', 'cl. 7.3.1', 'annex a'
 CLAUSE_REGEX = re.compile(r"\b(?:clause|cl\.?|section|sec\.?)\s+(\d+(?:\.\d+)*)\b|\b(annex\s+[A-Z](?:\.\d+)?)\b", re.IGNORECASE)

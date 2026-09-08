@@ -1,12 +1,12 @@
-"""Master retrieval service orchestrating vector, keyword, hybrid search, and evidence packaging."""
-
 import logging
 import time
+import uuid
 from typing import Any, Dict, List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.app.config import get_settings
 from backend.app.ingestion.embeddings import EmbeddingProvider, get_embedding_provider
+from backend.app.services.is_lookup_service import ISLookupService
 from backend.app.retrieval.citations import CitationBuilder
 from backend.app.retrieval.diversification import Diversifier
 from backend.app.retrieval.evidence import EvidencePackager
@@ -136,20 +136,81 @@ class RetrievalService:
             debug_data["vector_candidate_count"] = len(vector_candidates)
             debug_data["keyword_candidate_count"] = len(keyword_candidates)
 
+        # 3.5 Standard Catalog Retrieval (7,000+ BIS Standards Dataset)
+        catalog_candidates: List[Dict[str, Any]] = []
+        try:
+            lookup_query = detected_entities.get("standard_number") or normalized_query
+            lookup_res = ISLookupService.lookup(lookup_query)
+            if lookup_res and lookup_res.exact_match:
+                rec = lookup_res.exact_match
+                cid = uuid.uuid5(uuid.NAMESPACE_DNS, f"std-{rec.is_number}")
+                content = (
+                    f"Indian Standard: {rec.is_number}\n"
+                    f"Title: {rec.title}\n"
+                    f"Sectional Division: {rec.section}\n"
+                    f"Year Notified: {rec.year_notified or 'N/A'}\n"
+                    f"Status: {rec.status or 'Active'}\n"
+                    f"Applicable To: {rec.applicable_to or 'General Industrial / Commercial'}\n"
+                    f"ICS Code: {rec.ics_code or 'N/A'}\n"
+                    f"Scope & Description: {rec.scope_description or rec.title}"
+                )
+                catalog_candidates.append({
+                    "chunk_id": cid,
+                    "content": content,
+                    "standard_number": rec.is_number,
+                    "clause_number": "Scope & Specification",
+                    "heading": f"{rec.is_number} — {rec.title}",
+                    "score": 0.98,
+                    "vector_score": 0.98,
+                    "keyword_score": 0.98,
+                    "page_start": 1,
+                    "page_end": 1,
+                })
+            elif lookup_res and lookup_res.close_matches:
+                for cm in lookup_res.close_matches[:3]:
+                    rec = cm.record
+                    cid = uuid.uuid5(uuid.NAMESPACE_DNS, f"std-{rec.is_number}")
+                    content = (
+                        f"Indian Standard: {rec.is_number}\n"
+                        f"Title: {rec.title}\n"
+                        f"Sectional Division: {rec.section}\n"
+                        f"Year Notified: {rec.year_notified or 'N/A'}\n"
+                        f"Status: {rec.status or 'Active'}\n"
+                        f"Scope & Description: {rec.scope_description or rec.title}"
+                    )
+                    catalog_candidates.append({
+                        "chunk_id": cid,
+                        "content": content,
+                        "standard_number": rec.is_number,
+                        "clause_number": "Scope & Specification",
+                        "heading": f"{rec.is_number} — {rec.title}",
+                        "score": 0.85,
+                        "vector_score": 0.85,
+                        "keyword_score": 0.85,
+                        "page_start": 1,
+                        "page_end": 1,
+                    })
+        except Exception as exc:
+            logger.debug(f"Catalog lookup skipped: {exc}")
+
         # 4. Handle partial failures or combine candidates
         t_fusion_start = time.perf_counter()
         status = RetrievalStatus.SUCCESS
         if request.method == RetrievalMethod.HYBRID:
-            if not vector_candidates and not keyword_candidates and warnings:
+            if not vector_candidates and not keyword_candidates and not catalog_candidates and warnings:
                 raise RetrievalError(f"Both retrieval modalities failed: {'; '.join(warnings)}")
             elif not vector_candidates and keyword_candidates:
                 method_executed = "keyword_fallback"
                 status = RetrievalStatus.PARTIAL_FALLBACK
-                fused_candidates = keyword_candidates
+                fused_candidates = catalog_candidates + keyword_candidates
             elif vector_candidates and not keyword_candidates:
                 method_executed = "vector_fallback"
                 status = RetrievalStatus.PARTIAL_FALLBACK
-                fused_candidates = vector_candidates
+                fused_candidates = catalog_candidates + vector_candidates
+            elif not vector_candidates and not keyword_candidates and catalog_candidates:
+                method_executed = "catalog_lookup"
+                status = RetrievalStatus.SUCCESS
+                fused_candidates = catalog_candidates
             else:
                 # Both modalities succeeded: execute Weighted Score Fusion
                 fused_candidates = HybridFusion.weighted_score_fusion(
@@ -158,10 +219,12 @@ class RetrievalService:
                     vector_weight=settings.VECTOR_WEIGHT,
                     keyword_weight=settings.KEYWORD_WEIGHT,
                 )
+                if catalog_candidates:
+                    fused_candidates = catalog_candidates + fused_candidates
         elif request.method == RetrievalMethod.VECTOR:
-            fused_candidates = vector_candidates
+            fused_candidates = catalog_candidates + vector_candidates
         else:
-            fused_candidates = keyword_candidates
+            fused_candidates = catalog_candidates + keyword_candidates
 
         debug_data["hybrid_fusion_ms"] = round((time.perf_counter() - t_fusion_start) * 1000, 2)
 
