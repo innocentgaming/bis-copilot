@@ -68,46 +68,43 @@ export function TopBar({
           <div>
             <div className="flex items-center gap-1.5">
               <span className="font-extrabold text-slate-900 dark:text-white text-sm tracking-tight">
-                BIS AI
+                BIS AI COPILOT
               </span>
               <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">
-                GOV ASSIST
+                OFFICIAL
               </span>
             </div>
             <span className="text-[10px] text-slate-400 block -mt-0.5 leading-none">
-              Standards & Consumer Assistance
+              Standards, Certification &amp; Consumer Safety Assistant
             </span>
           </div>
         </Link>
       </div>
 
-      {/* Center: Desktop Navigation shortcuts */}
-      <nav className="hidden lg:flex items-center gap-5 text-xs font-semibold text-slate-600 dark:text-slate-300">
+      {/* Center: Desktop Navigation */}
+      <nav className="hidden lg:flex items-center gap-6 text-xs font-semibold text-slate-600 dark:text-slate-300">
         <Link href="/" className="hover:text-blue-600 transition">
           Home
         </Link>
-        <Link href="/assistant" className="hover:text-blue-600 transition flex items-center gap-1 text-purple-600 dark:text-purple-400 font-bold">
-          <Sparkles className="w-3.5 h-3.5" />
-          AI Assistant
+        <Link href="/assistant" className="hover:text-blue-600 transition flex items-center gap-1 text-blue-600 dark:text-blue-400 font-bold">
+          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+          <span>Ask AI</span>
         </Link>
-        <Link href="/standards/search" className="hover:text-blue-600 transition">
-          Standards Search
+        <Link href="/standards" className="hover:text-blue-600 transition">
+          Standards
         </Link>
-        <Link href="/services" className="hover:text-blue-600 transition">
-          BIS Services
-        </Link>
-        <Link href="/hallmarking" className="hover:text-blue-600 transition">
-          Hallmarking
+        <Link href="/product-verification" className="hover:text-blue-600 transition">
+          Verify
         </Link>
         <Link href="/consumer-help" className="hover:text-blue-600 transition">
           Consumer Help
         </Link>
-        <Link href="/applications" className="hover:text-blue-600 transition">
-          Track Status
+        <Link href="/about" className="hover:text-blue-600 transition">
+          Architecture
         </Link>
       </nav>
 
-      {/* Right: Actions, Language & Ask AI Button */}
+      {/* Right: Language Dropdown & Ask BIS AI Button */}
       <div className="flex items-center gap-2.5">
         {/* System online indicator */}
         <div
