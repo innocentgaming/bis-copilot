@@ -141,4 +141,19 @@ export const platformApi = {
   analyzeDocument(formData: FormData): Promise<DocumentAIResponse> {
     return apiClient.post<DocumentAIResponse>("/multimodal/document-ai", formData);
   },
+
+  // Product Verification
+  verifyProduct(data: {
+    cml_license_number?: string;
+    is_number?: string;
+    manufacturer_name?: string;
+    product_name?: string;
+    image_filename?: string;
+  }): Promise<import("@/types/bis_platform").ProductVerificationResult> {
+    return apiClient.post<import("@/types/bis_platform").ProductVerificationResult>("/verification/product", data);
+  },
+
+  verifyLicence(cmlNumber: string): Promise<import("@/types/bis_platform").ProductVerificationResult> {
+    return apiClient.get<import("@/types/bis_platform").ProductVerificationResult>(`/verification/licence/${encodeURIComponent(cmlNumber.trim())}`);
+  },
 };

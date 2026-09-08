@@ -27,6 +27,15 @@ import {
   Flame,
   Check,
   Zap,
+  Building2,
+  Users,
+  Briefcase,
+  GraduationCap,
+  ShieldAlert,
+  SearchCode,
+  FileCheck,
+  Cpu,
+  BadgeCheck,
 } from "lucide-react";
 import { ISLookupSection } from "@/components/standards/ISLookupSection";
 import { VoiceModal } from "@/components/multimodal/VoiceModal";
@@ -39,7 +48,58 @@ const POPULAR_PROMPTS = [
   "How to verify a 6-digit HUID code on 22K gold jewelry?",
   "What is the penalty for selling products with fake ISI mark?",
   "What documents are required for Compulsory Registration Scheme (CRS)?",
-  "How long does it take to obtain a BIS Scheme-I licence?",
+  "How to verify CM/L-8472910 on packaged drinking water?",
+];
+
+const WORKFLOW_STEPS = [
+  {
+    step: "STEP 1",
+    title: "USER QUERY",
+    tagline: "Multimodal Input",
+    desc: "Ask via Text, Speech (Hindi/English), Product Packaging Image, or PDF Gazette upload.",
+    icon: Mic,
+    color: "from-blue-600 to-cyan-600",
+  },
+  {
+    step: "STEP 2",
+    title: "AI UNDERSTANDS INTENT",
+    tagline: "NLP Categorization",
+    desc: "Detects product category, standard IS code, certification requirements, or safety violations.",
+    icon: Cpu,
+    color: "from-indigo-600 to-blue-600",
+  },
+  {
+    step: "STEP 3",
+    title: "SEARCH BIS REPOSITORY",
+    tagline: "Hybrid RAG Engine",
+    desc: "Scans 7,000+ Indian Standards, gazette QCOs, and CM/L license registries with sub-second retrieval.",
+    icon: SearchCode,
+    color: "from-purple-600 to-indigo-600",
+  },
+  {
+    step: "STEP 4",
+    title: "EXTRACT & ANALYZE",
+    tagline: "Evidence Grounding",
+    desc: "Pinpoints mandatory safety clauses, test parameters, quality limits, and authorized manufacturers.",
+    icon: FileCheck,
+    color: "from-amber-600 to-orange-600",
+  },
+  {
+    step: "STEP 5",
+    title: "RESPONSE WITH SOURCES",
+    tagline: "Zero-Hallucination",
+    desc: "Generates clear AI Answer, 'Why this answer?' reasoning, and direct links to official BIS clauses.",
+    icon: ShieldCheck,
+    color: "from-emerald-600 to-teal-600",
+  },
+  {
+    step: "STEP 6",
+    title: "ACCURATE GUIDANCE & ACTION",
+    tagline: "Actionable Resolution",
+    desc: "One-click actions: [Verify Now], [Report a Problem], [Checklist], or [Ask Follow-up].",
+    icon: BadgeCheck,
+    color: "from-rose-600 to-pink-600",
+  },
 ];
 
 const BIS_POPULAR_SERVICES = [
@@ -59,7 +119,7 @@ const BIS_POPULAR_SERVICES = [
     title: "Hallmarking Scheme",
     tag: "Gold & Silver",
     desc: "Mandatory purity certification with 6-digit laser-etched HUID codes for precious jewelry.",
-    link: "/hallmarking",
+    link: "/hallmark-verification",
   },
   {
     title: "Foreign Manufacturers (FMCS)",
@@ -88,21 +148,22 @@ const FAQS = [
   },
   {
     q: "How can I verify if an ISI mark on a product is genuine or counterfeit?",
-    a: "Every genuine ISI mark contains a 7-digit licence number (CM/L-XXXXXXX) printed below or beside the standard mark. You can enter this CM/L number or IS standard in our Smart Standards Search or AI Assistant to verify its authenticity.",
+    a: "Every genuine ISI mark contains a 7-digit licence number (CM/L-XXXXXXX) printed below or beside the standard mark. You can enter this CM/L number or IS standard in our Product Verification tool or AI Assistant to verify its authenticity instantly.",
   },
   {
-    q: "What does the 6-digit HUID on gold jewelry mean?",
-    a: "HUID stands for Hallmark Unique Identification. It is a 6-character alphanumeric code laser-etched on each piece of jewelry at an authorized Assaying and Hallmarking Centre (AHC), enabling complete traceability of gold purity.",
+    q: "What does the 6-character HUID on gold jewelry mean?",
+    a: "HUID stands for Hallmark Unique Identification. It is a 6-character alphanumeric code laser-etched on each piece of jewelry at an authorized Assaying and Hallmarking Centre (AHC), enabling complete traceability and verification of gold purity (e.g. 22K916, 18K750).",
   },
   {
     q: "How does the BIS AI Assistant provide accurate answers without hallucination?",
-    a: "BIS AI uses an advanced Retrieval-Augmented Generation (RAG) architecture grounded strictly in 7,000+ official Indian Standards, gazette Quality Control Orders (QCOs), and BIS procedural guidelines with verifiable clause citations.",
+    a: "BIS AI uses an advanced Retrieval-Augmented Generation (RAG) architecture grounded strictly in 7,000+ official Indian Standards, gazette Quality Control Orders (QCOs), and BIS procedural guidelines with verifiable clause citations and 'Why this answer?' transparency drawers.",
   },
 ];
 
 export default function HomePage() {
   const router = useRouter();
   const [heroQuery, setHeroQuery] = useState("");
+  const [cmlInput, setCmlInput] = useState("");
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [visionOpen, setVisionOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
@@ -113,11 +174,17 @@ export default function HomePage() {
     router.push(`/assistant?q=${encodeURIComponent(heroQuery.trim())}`);
   };
 
+  const handleQuickVerify = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!cmlInput.trim()) return;
+    router.push(`/product-verification?cml=${encodeURIComponent(cmlInput.trim())}`);
+  };
+
   return (
     <div className="space-y-16 md:space-y-24 pb-16">
       {/* 1. HERO SECTION */}
       <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 p-8 md:p-16 text-white shadow-2xl border border-blue-900/40">
-        {/* Glow effect */}
+        {/* Glow effects */}
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl pointer-events-none" />
 
@@ -125,23 +192,26 @@ export default function HomePage() {
           {/* Top Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/15 border border-blue-400/30 text-xs font-bold text-blue-300 backdrop-blur-md">
             <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            <span>AI-Powered Intelligent Assistant for Indian Standards & BIS Services</span>
+            <span>AI-Powered BIS Knowledge Assistant</span>
           </div>
 
-          {/* Heading */}
+          {/* 3-Line Heading */}
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight">
-            Your Intelligent Assistant for <br />
-            <span className="bg-gradient-to-r from-amber-400 via-blue-200 to-indigo-300 bg-clip-text text-transparent">
-              BIS Standards & Services
+            Understand BIS Standards. <br />
+            <span className="bg-gradient-to-r from-blue-300 via-sky-200 to-indigo-200 bg-clip-text text-transparent">
+              Verify Products.
+            </span> <br />
+            <span className="bg-gradient-to-r from-amber-300 via-amber-200 to-yellow-400 bg-clip-text text-transparent">
+              Stay Safe.
             </span>
           </h1>
 
           {/* Subheading */}
           <p className="text-sm md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            Get instant, accurate and trusted guidance on Indian Standards, BIS certification, hallmarking, compliance and consumer services.
+            AI assistant for Indian Standards, ISI mark verification, hallmarking, compliance &amp; consumer protection. 100% evidence-grounded with official gazette citations.
           </p>
 
-          {/* Action Buttons */}
+          {/* Action CTAs */}
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <Link
               href="/assistant"
@@ -151,11 +221,18 @@ export default function HomePage() {
               <span>Ask BIS AI</span>
             </Link>
             <Link
-              href="/standards/search"
-              className="px-7 py-3.5 rounded-2xl bg-slate-900/80 hover:bg-slate-800 text-slate-200 font-bold text-sm border border-slate-700 shadow-md backdrop-blur-md transition flex items-center gap-2"
+              href="/product-verification"
+              className="px-7 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-xl hover:shadow-emerald-500/25 transition transform active:scale-95 flex items-center gap-2"
             >
-              <Search className="w-4 h-4 text-slate-400" />
-              <span>Search Standards</span>
+              <ShieldCheck className="w-4 h-4 text-emerald-200" />
+              <span>Verify a Product</span>
+            </Link>
+            <Link
+              href="/complaints"
+              className="px-6 py-3.5 rounded-2xl bg-slate-900/80 hover:bg-slate-800 text-slate-200 font-bold text-sm border border-slate-700 shadow-md backdrop-blur-md transition flex items-center gap-2"
+            >
+              <AlertTriangle className="w-4 h-4 text-rose-400" />
+              <span>File Complaint</span>
             </Link>
           </div>
 
@@ -168,7 +245,7 @@ export default function HomePage() {
               type="text"
               value={heroQuery}
               onChange={(e) => setHeroQuery(e.target.value)}
-              placeholder="Ask anything about BIS, standards, certification or consumer rights..."
+              placeholder="Ask anything (e.g., 'Is ISI mark mandatory for helmet?', 'Verify CM/L-8472910')..."
               className="flex-1 px-4 py-3 bg-transparent text-white placeholder-slate-400 text-xs sm:text-sm focus:outline-none"
             />
             <div className="flex items-center gap-1.5 pr-1">
@@ -192,15 +269,15 @@ export default function HomePage() {
                 type="submit"
                 className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md transition flex items-center gap-1"
               >
-                <span>Send</span>
+                <span>Ask</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </form>
 
-          {/* Sample Benchmark Prompts */}
+          {/* Sample Prompts */}
           <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
-            <span className="text-[11px] font-bold text-slate-400">Popular Inquiries:</span>
+            <span className="text-[11px] font-bold text-slate-400">Try asking:</span>
             {POPULAR_PROMPTS.slice(0, 3).map((prompt, idx) => (
               <button
                 key={idx}
@@ -212,180 +289,186 @@ export default function HomePage() {
               </button>
             ))}
           </div>
+
+          {/* Quick License Verification Strip */}
+          <div className="pt-4 border-t border-white/10 max-w-2xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-left">
+            <div className="text-xs text-slate-300">
+              <span className="font-bold text-amber-300 flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-amber-400" /> Quick ISI Licence Verification:
+              </span>
+              <span>Enter 7-digit CM/L number printed on packaging</span>
+            </div>
+            <form onSubmit={handleQuickVerify} className="flex items-center gap-2 w-full sm:w-auto">
+              <input
+                type="text"
+                value={cmlInput}
+                onChange={(e) => setCmlInput(e.target.value)}
+                placeholder="e.g. CM/L-8472910"
+                className="px-3 py-1.5 rounded-xl bg-white/10 text-white placeholder-slate-400 text-xs focus:outline-none border border-white/20 uppercase w-36 font-mono"
+              />
+              <button
+                type="submit"
+                className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition shrink-0"
+              >
+                Verify
+              </button>
+            </form>
+          </div>
         </div>
       </section>
 
-      {/* 2. THREE-COLUMN PROBLEM + SOLUTION + KEY FEATURES SECTION */}
+      {/* 2. HOW BIS AI COPILOT WORKS (CONNECTED 6-STEP WORKFLOW) */}
+      <section className="p-8 md:p-12 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-8">
+        <div className="text-center space-y-2 max-w-2xl mx-auto">
+          <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">
+            End-to-End System Architecture
+          </span>
+          <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">
+            How BIS AI Copilot Works
+          </h2>
+          <p className="text-xs text-slate-500">
+            From multimodal question to authoritative resolution with zero-hallucination source transparency.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {WORKFLOW_STEPS.map((item, idx) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={idx}
+                className="relative p-6 rounded-3xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-4 hover:border-blue-500/50 hover:shadow-md transition group"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-blue-600 text-white">
+                    {item.step}
+                  </span>
+                  <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${item.color} text-white flex items-center justify-center shadow-md`}>
+                    <Icon className="w-4 h-4" />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                    {item.tagline}
+                  </span>
+                  <h4 className="text-sm font-black text-slate-900 dark:text-white group-hover:text-blue-600 transition">
+                    {item.title}
+                  </h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    {item.desc}
+                  </p>
+                </div>
+
+                <div className="pt-2 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-[11px] font-semibold text-slate-400">
+                  <span>Stage {idx + 1} of 6</span>
+                  <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition text-blue-500" />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* 3. TARGET AUDIENCE PATHWAYS */}
       <section className="space-y-6">
         <div className="text-center space-y-2">
           <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">
-            Problem vs Solution Architecture
-          </span>
-          <h2 className="text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-white">
-            Transforming Complex Standards into Simple Guidance
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* COLUMN 1 — WHAT IS THE PROBLEM? */}
-          <div className="p-6 md:p-8 rounded-3xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/40 space-y-5">
-            <div className="flex items-center gap-2 text-rose-700 dark:text-rose-400">
-              <AlertTriangle className="w-5 h-5" />
-              <h3 className="text-base font-extrabold uppercase tracking-wider">
-                What is the Problem?
-              </h3>
-            </div>
-
-            <div className="space-y-3.5">
-              <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-rose-100 dark:border-rose-900/30 space-y-1">
-                <strong className="text-xs font-bold text-slate-900 dark:text-white block">
-                  1. Difficult Standards Search
-                </strong>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Consumers and industries struggle to find the right Indian Standards across thousands of PDF publications.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-rose-100 dark:border-rose-900/30 space-y-1">
-                <strong className="text-xs font-bold text-slate-900 dark:text-white block">
-                  2. Complex Documentation
-                </strong>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Large and confusing documentation makes BIS certification and compliance processes difficult for MSMEs.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-rose-100 dark:border-rose-900/30 space-y-1">
-                <strong className="text-xs font-bold text-slate-900 dark:text-white block">
-                  3. Delays & Uncertainty
-                </strong>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Users often don&apos;t know application, approval, or compliance status across different portal silos.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-rose-100 dark:border-rose-900/30 space-y-1">
-                <strong className="text-xs font-bold text-slate-900 dark:text-white block">
-                  4. Lack of Accessible Guidance
-                </strong>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  24x7 guidance in local Indian languages is limited for grassroots citizens and small businesses.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* COLUMN 2 — OUR SOLUTION */}
-          <div className="p-6 md:p-8 rounded-3xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-900/40 space-y-5">
-            <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400">
-              <Bot className="w-5 h-5" />
-              <h3 className="text-base font-extrabold uppercase tracking-wider">
-                Our Solution
-              </h3>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white space-y-2 shadow-md">
-              <span className="text-xs font-bold uppercase tracking-wider text-blue-200 block">
-                Intelligent Platform
-              </span>
-              <h4 className="text-lg font-black leading-snug">
-                An AI-powered Intelligent Assistant
-              </h4>
-              <p className="text-xs text-blue-100 leading-relaxed">
-                Seamlessly bridges official government databases and everyday citizens with natural language understanding.
-              </p>
-            </div>
-
-            <div className="space-y-2.5 text-xs font-medium text-slate-700 dark:text-slate-300">
-              {[
-                "Indian Standards Search (7,000+ Standards)",
-                "BIS Certification & Services Navigator",
-                "Compliance & Mandatory QCO Guidance",
-                "Application Assistance & Form Fillers",
-                "Status Tracking & Live Notifications",
-                "11 Indian Languages Multi-language Support",
-              ].map((item, idx) => (
-                <div
-                  key={idx}
-                  className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-blue-100 dark:border-blue-900/30 flex items-center gap-2.5"
-                >
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* COLUMN 3 — KEY FEATURES */}
-          <div className="p-6 md:p-8 rounded-3xl bg-purple-50/50 dark:bg-purple-950/20 border border-purple-200/80 dark:border-purple-900/40 space-y-5">
-            <div className="flex items-center gap-2 text-purple-700 dark:text-purple-400">
-              <Zap className="w-5 h-5" />
-              <h3 className="text-base font-extrabold uppercase tracking-wider">
-                Key Features
-              </h3>
-            </div>
-
-            <div className="space-y-2.5 text-xs">
-              {[
-                { title: "Natural Language Chatbot (24x7)", desc: "Instant answers with authoritative clause citations." },
-                { title: "Smart Standards Search", desc: "Sub-millisecond IS number & keyword retrieval engine." },
-                { title: "BIS Services Directory", desc: "Eligibility, fees, and steps for all 10+ schemes." },
-                { title: "Step-by-Step Guidance", desc: "Interactive 8-stage certification roadmap." },
-                { title: "Document Assistant", desc: "PDF upload, circular summarizer & checklist generator." },
-                { title: "Status Tracking & Alerts", desc: "Real-time tracking for applications & complaints." },
-                { title: "Multi-language Support", desc: "11 Indian languages preset with localized text." },
-                { title: "Voice & Image Based Queries", desc: "Microphone speech & product packaging label scanner." },
-              ].map((feat, idx) => (
-                <div
-                  key={idx}
-                  className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-purple-100 dark:border-purple-900/30 space-y-0.5"
-                >
-                  <div className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <Check className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-                    <span>{feat.title}</span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 pl-5.5">{feat.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. HOW BIS AI WORKS (5-STEP WORKFLOW) */}
-      <section className="p-8 md:p-12 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-8">
-        <div className="text-center space-y-2">
-          <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">
-            Evidence-Grounded RAG Pipeline
+            Tailored Assistance
           </span>
           <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white">
-            How BIS AI Works
+            Who is BIS AI Copilot Built For?
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          {[
-            { step: "1. ASK", title: "Ask Your Question", desc: "Type, speak in Hindi/English, or upload a product packaging image." },
-            { step: "2. UNDERSTAND", title: "BIS AI Understands", desc: "Identifies product category, technical parameters, and user intent." },
-            { step: "3. SEARCH", title: "Searches Knowledge", desc: "Scans 7,000+ Indian Standards and official BIS scheme guidelines." },
-            { step: "4. VERIFY", title: "Verifies Evidence", desc: "Validates clause-level accuracy with strict anti-hallucination guardrails." },
-            { step: "5. GUIDE", title: "Step-by-Step Guidance", desc: "Provides actionable checklists, fees, forms, and official portal links." },
-          ].map((item, idx) => (
-            <div
-              key={idx}
-              className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-3"
-            >
-              <div className="space-y-1">
-                <span className="text-[10px] font-extrabold text-blue-600 dark:text-blue-400 tracking-wider">
-                  {item.step}
-                </span>
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white">
-                  {item.title}
-                </h4>
-                <p className="text-xs text-slate-500 leading-relaxed">{item.desc}</p>
-              </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Consumers */}
+          <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 hover:border-emerald-500/50 transition">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
+              <Users className="w-5 h-5" />
             </div>
-          ))}
+            <div className="space-y-1">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                Consumers &amp; Citizens
+              </h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Verify ISI mark authenticity, check gold HUID codes, learn mandatory product safety rules, and file complaints.
+              </p>
+            </div>
+            <Link
+              href="/consumer-help"
+              className="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 pt-2"
+            >
+              <span>Consumer Hub</span>
+              <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+
+          {/* MSMEs & Manufacturers */}
+          <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 hover:border-blue-500/50 transition">
+            <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center">
+              <Building2 className="w-5 h-5" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                MSMEs &amp; Manufacturers
+              </h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Discover applicable IS codes, calculate certification fees, understand laboratory testing, and get grant checklists.
+              </p>
+            </div>
+            <Link
+              href="/certifications"
+              className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 pt-2"
+            >
+              <span>Certification Roadmap</span>
+              <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+
+          {/* Startups & Importers */}
+          <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 hover:border-purple-500/50 transition">
+            <div className="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-600 flex items-center justify-center">
+              <Briefcase className="w-5 h-5" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                Startups &amp; Importers
+              </h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Navigate Compulsory Registration Scheme (CRS) for electronics, FMCS for overseas factories, and customs clearance rules.
+              </p>
+            </div>
+            <Link
+              href="/services/compulsory-registration-scheme-crs"
+              className="text-xs font-bold text-purple-600 hover:text-purple-700 flex items-center gap-1 pt-2"
+            >
+              <span>CRS Guidance</span>
+              <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+
+          {/* Inspectors & Students */}
+          <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 hover:border-amber-500/50 transition">
+            <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center">
+              <GraduationCap className="w-5 h-5" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                Inspectors &amp; Students
+              </h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Research Indian Standards clauses, summarize complex technical documents, analyze Quality Control Orders (QCOs).
+              </p>
+            </div>
+            <Link
+              href="/documents"
+              className="text-xs font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1 pt-2"
+            >
+              <span>Document Assistant</span>
+              <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -417,7 +500,7 @@ export default function HomePage() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="space-y-1">
             <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">
-              Schemes & Conformity
+              Schemes &amp; Conformity
             </span>
             <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white">
               Explore Popular BIS Services
@@ -478,19 +561,19 @@ export default function HomePage() {
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-xs font-bold text-amber-100">
               <Gem className="w-3.5 h-3.5 text-yellow-300" />
-              <span>Gold & Silver Purity</span>
+              <span>Gold &amp; Silver Purity</span>
             </div>
             <h3 className="text-2xl font-black">
-              Verify 6-Digit Hallmark HUID
+              Verify 6-Character Hallmark HUID
             </h3>
             <p className="text-xs text-amber-100 leading-relaxed">
-              Ensure your gold jewelry matches mandatory purity markings (22K916, 18K750) and check the registered Assaying & Hallmarking Centre.
+              Ensure your gold jewelry matches mandatory purity markings (22K916, 18K750, 14K585) and check the registered Assaying &amp; Hallmarking Centre.
             </p>
           </div>
 
           <div className="pt-2 flex items-center gap-3">
             <Link
-              href="/hallmarking"
+              href="/hallmark-verification"
               className="px-6 py-3 rounded-2xl bg-white text-slate-950 font-bold text-xs shadow-md hover:bg-amber-50 transition"
             >
               Verify HUID Code
@@ -515,7 +598,7 @@ export default function HomePage() {
               Encountered a Fake ISI Mark or Defect?
             </h3>
             <p className="text-xs text-slate-300 leading-relaxed">
-              Lodge an official grievance against sub-standard products, counterfeit marks, or misleading claims through our guided complaint wizard.
+              Lodge an official grievance against sub-standard products, counterfeit marks, or misleading claims through our guided 6-step complaint wizard.
             </p>
           </div>
 
@@ -648,13 +731,13 @@ export default function HomePage() {
             className="px-8 py-3.5 rounded-2xl bg-white text-slate-950 font-black text-sm shadow-xl hover:bg-slate-100 transition flex items-center gap-2"
           >
             <Sparkles className="w-4 h-4 text-amber-500" />
-            <span>Launch 24x7 BIS AI Assistant</span>
+            <span>Launch BIS AI Copilot</span>
           </Link>
           <Link
-            href="/standards/search"
+            href="/product-verification"
             className="px-8 py-3.5 rounded-2xl bg-black/20 text-white font-bold text-sm border border-white/20 hover:bg-black/30 transition"
           >
-            Explore Standards
+            Verify Product ISI Mark
           </Link>
         </div>
       </section>

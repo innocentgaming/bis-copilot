@@ -38,13 +38,11 @@ import { VoiceModal } from "@/components/multimodal/VoiceModal";
 import { VisionModal } from "@/components/multimodal/VisionModal";
 
 const QUICK_ACTIONS = [
-  { label: "Search an Indian Standard", query: "Find the Indian Standard for electrical appliances and plugs." },
-  { label: "How to get BIS Certification?", query: "How do I apply for an ISI Mark licence under Scheme-I?" },
-  { label: "Hallmarking information", query: "What are the mandatory marking requirements and HUID for 22K gold jewelry?" },
-  { label: "Check application status", query: "How can I check the status of my BIS application or license renewal?" },
-  { label: "File a consumer complaint", query: "How do I lodge a complaint for a counterfeit ISI mark on a product?" },
-  { label: "Find BIS service", query: "What services does BIS provide for MSMEs and foreign manufacturers?" },
-  { label: "Explain a BIS document", query: "Explain the requirements of a Quality Control Order (QCO) notification." },
+  { label: "What products require BIS certification?", query: "What products require mandatory BIS certification under Quality Control Orders (QCO)?" },
+  { label: "How do I verify a BIS licence?", query: "How do I verify if a product's 7-digit CM/L licence number is authentic and active?" },
+  { label: "What does IS 302 mean?", query: "What does IS 302 cover regarding safety of electrical household appliances?" },
+  { label: "How can I report a fake BIS mark?", query: "How can I report a counterfeit or unauthorized ISI mark on a product?" },
+  { label: "How do I verify a hallmark?", query: "How do I verify the 6-digit laser-etched HUID hallmark on gold jewelry?" },
 ];
 
 function extractDisplayAnswer(raw: string): string {
@@ -404,10 +402,10 @@ function AssistantContent() {
               </div>
               <div className="space-y-2">
                 <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white">
-                  Hello! I&apos;m BIS AI.
+                  Namaste! I&apos;m BIS AI Copilot.
                 </h3>
                 <p className="text-xs md:text-sm text-slate-600 dark:text-slate-400 max-w-lg mx-auto leading-relaxed">
-                  I can help you with Indian Standards, BIS certification, hallmarking, consumer complaints, compliance requirements and BIS services.
+                  How can I help you with BIS standards, product certification or consumer safety?
                 </p>
               </div>
 

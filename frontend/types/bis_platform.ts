@@ -209,3 +209,31 @@ export interface DocumentAIResponse {
   action_items: string[];
   potential_issues: string[];
 }
+
+export interface ProductVerificationRequest {
+  cml_license_number?: string;
+  is_number?: string;
+  manufacturer_name?: string;
+  product_name?: string;
+  image_filename?: string;
+}
+
+export interface ProductVerificationResult {
+  status: "VERIFIED" | "NEEDS_VERIFICATION" | "NOT_FOUND" | string;
+  status_label: string;
+  product_name: string;
+  manufacturer_name: string;
+  cml_license_number: string;
+  is_number: string;
+  standard_title: string;
+  certification_scheme: string;
+  validity_period: string;
+  factory_location: string;
+  safety_summary: string;
+  applicable_clauses: string[];
+  warning_notice?: string | null;
+  verification_source: string;
+  is_genuine_mark: boolean;
+  disclaimer: string;
+}
+

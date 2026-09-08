@@ -23,6 +23,7 @@ from backend.app.api.routes.notifications import router as notifications_router
 from backend.app.api.routes.multimodal import router as multimodal_router
 from backend.app.api.routes.complaints import router as complaints_router
 from backend.app.api.routes.hallmarking import router as hallmarking_router
+from backend.app.api.routes.verification import router as verification_router
 
 api_router = APIRouter()
 
@@ -45,5 +46,6 @@ api_router.include_router(notifications_router)
 api_router.include_router(multimodal_router)
 api_router.include_router(complaints_router)
 api_router.include_router(hallmarking_router)
+api_router.include_router(verification_router)
 api_router.include_router(admin_router)
 api_router.include_router(health_router)
