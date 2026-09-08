@@ -31,7 +31,7 @@ export function TopBar({
     async function checkHealth() {
       try {
         const res = await apiClient.get<{ status: string; database: string }>("/health");
-        if (res.database === "ok") {
+        if (res.database === "ok" || res.database === "healthy") {
           setDbStatus("ok");
         } else {
           setDbStatus("degraded");

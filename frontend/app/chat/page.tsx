@@ -28,6 +28,22 @@ const SAMPLE_PROMPTS = [
   "What is the recipe for baking chocolate chip cookies?", // Demonstrates safe refusal
 ];
 
+function extractDisplayAnswer(raw: string): string {
+  if (!raw.trim().startsWith("{")) return raw;
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed.answer === "string") {
+      return parsed.answer;
+    }
+  } catch {
+    const match = raw.match(/"answer"\s*:\s*"((?:[^"\\]|\\.)*)/);
+    if (match && match[1]) {
+      return match[1].replace(/\\n/g, "\n").replace(/\\"/g, '"');
+    }
+  }
+  return raw;
+}
+
 function ChatContent() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q");
@@ -152,10 +168,11 @@ function ChatContent() {
         // onToken:
         (token: string) => {
           accumulatedContent += token;
+          const display = extractDisplayAnswer(accumulatedContent);
           setMessages((prev) =>
             prev.map((msg) =>
               msg.id === assistantMsgId
-                ? { ...msg, content: accumulatedContent, isStreaming: true }
+                ? { ...msg, content: display, isStreaming: true }
                 : msg
             )
           );
@@ -166,13 +183,15 @@ function ChatContent() {
           setIsLoading(false);
           setActiveConvId(finalPayload.conversation_id);
 
+          const finalAnswer = finalPayload.answer || extractDisplayAnswer(accumulatedContent);
+
           setMessages((prev) =>
             prev.map((msg) =>
               msg.id === assistantMsgId
                 ? {
                     id: finalPayload.message_id || assistantMsgId,
                     role: "assistant",
-                    content: finalPayload.answer || accumulatedContent,
+                    content: finalAnswer,
                     confidence_score: finalPayload.confidence,
                     confidence_level: finalPayload.confidence_level,
                     insufficient_evidence: finalPayload.insufficient_evidence,
@@ -181,6 +200,7 @@ function ChatContent() {
                     follow_up_questions: finalPayload.follow_up_questions || [],
                     processing: finalPayload.processing,
                     isStreaming: false,
+                    isRefusal: finalPayload.insufficient_evidence,
                   }
                 : msg
             )
