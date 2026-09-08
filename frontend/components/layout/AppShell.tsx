@@ -6,10 +6,11 @@ import { TopBar } from "./TopBar";
 import { MobileNav } from "./MobileNav";
 import { Footer } from "./Footer";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
+import { IndianLanguageCode } from "@/types/bis_platform";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState<"en" | "hi" | "mr">("en");
+  const [selectedLanguage, setSelectedLanguage] = useState<IndianLanguageCode>("en");
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-950 font-sans text-slate-900 dark:text-slate-100 antialiased">

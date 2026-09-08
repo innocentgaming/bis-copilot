@@ -17,15 +17,18 @@ import {
   AlertTriangle,
   Bell,
   Upload,
+  Gem,
+  FileText,
+  HelpCircle,
 } from "lucide-react";
 import { platformApi } from "@/lib/api/platform";
-import { BISApplication, ComplianceRecord, BISNotification } from "@/types/bis_platform";
+import { BISApplication, ComplianceRecord, BISNotification, ComplaintRecord } from "@/types/bis_platform";
 import { useAuth } from "@/lib/auth/context";
-import { Footer } from "@/components/layout/Footer";
 
 export default function UserDashboardPage() {
   const { currentUser } = useAuth();
   const [applications, setApplications] = useState<BISApplication[]>([]);
+  const [complaints, setComplaints] = useState<ComplaintRecord[]>([]);
   const [compliance, setCompliance] = useState<ComplianceRecord[]>([]);
   const [notifications, setNotifications] = useState<BISNotification[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,12 +36,14 @@ export default function UserDashboardPage() {
   useEffect(() => {
     async function load() {
       try {
-        const [apps, comp, notifs] = await Promise.all([
+        const [apps, comps, comp, notifs] = await Promise.all([
           platformApi.listApplications(),
+          platformApi.listComplaints(),
           platformApi.listComplianceRecords(),
           platformApi.listNotifications({ unread_only: false }),
         ]);
         setApplications(apps);
+        setComplaints(comps);
         setCompliance(comp);
         setNotifications(notifs);
       } catch {
@@ -50,66 +55,82 @@ export default function UserDashboardPage() {
     load();
   }, []);
 
-  const quickActions = [
+  const quickTools = [
     {
-      title: "Ask AI Assistant",
+      title: "Ask BIS AI",
       desc: "24x7 intelligent guidance with cited standard clauses",
       icon: Bot,
       href: "/assistant",
-      color: "from-amber-500 to-amber-700",
+      color: "from-blue-600 to-indigo-700",
       badge: "AI 24×7",
     },
     {
       title: "Know Your Standards",
       desc: "Instant IS Number lookup across 7,000+ standards",
       icon: BookOpen,
-      href: "/standards",
-      color: "from-blue-600 to-indigo-700",
+      href: "/standards/search",
+      color: "from-indigo-600 to-purple-700",
       badge: "7,000+ IS",
     },
     {
-      title: "Track Application",
-      desc: "Live status timeline for ISI and CRS licences",
-      icon: Clock,
-      href: "/applications",
-      color: "from-emerald-600 to-teal-700",
-      badge: "Live Status",
+      title: "File Grievance",
+      desc: "Lodge quality complaint for fake ISI or defective goods",
+      icon: AlertTriangle,
+      href: "/complaints",
+      color: "from-rose-600 to-red-700",
+      badge: "Consumer",
+    },
+    {
+      title: "Verify Hallmark HUID",
+      desc: "Check 6-character laser-etched gold purity code",
+      icon: Gem,
+      href: "/hallmarking",
+      color: "from-amber-500 to-yellow-600",
+      badge: "Gold Purity",
     },
     {
       title: "Document AI Scanner",
-      desc: "Upload PDF / spec for automatic compliance breakdown",
+      desc: "Upload PDF circular or spec for checklist extraction",
       icon: Upload,
       href: "/documents",
       color: "from-violet-600 to-purple-700",
       badge: "Smart OCR",
     },
+    {
+      title: "Certification Guide",
+      desc: "Follow the 8-step journey for Scheme-I and CRS",
+      icon: ShieldCheck,
+      href: "/certifications",
+      color: "from-emerald-600 to-teal-700",
+      badge: "Step-by-Step",
+    },
   ];
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="space-y-8 pb-16">
       {/* Welcome Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 p-8 text-white shadow-xl border border-slate-700/60">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 p-8 text-white shadow-xl border border-blue-900/40">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-              <Sparkles className="w-3.5 h-3.5" />
-              BIS Digital Portal Dashboard
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <span>BIS Citizen & Industry Portal</span>
             </div>
             <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
               Welcome back, {currentUser?.name || "Manufacturing Partner"}
             </h1>
             <p className="text-xs md:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              Monitor active licence applications, assess mandatory QCO standards, consult your AI Compliance Assistant, and access 7,000+ Indian Standards.
+              Monitor active licence applications, assess mandatory QCO standards, track filed quality complaints, and consult the 24x7 BIS AI Assistant.
             </p>
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
             <Link
               href="/assistant"
-              className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-lg transition flex items-center gap-1.5"
+              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg transition flex items-center gap-1.5"
             >
               <Bot className="w-4 h-4" />
-              <span>Launch AI Assistant</span>
+              <span>Ask BIS AI</span>
             </Link>
           </div>
         </div>
@@ -131,19 +152,19 @@ export default function UserDashboardPage() {
 
         <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-1">
           <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-            Average Compliance Score
+            Filed Complaints
           </span>
-          <div className="text-2xl font-extrabold text-amber-500">
-            78%
+          <div className="text-2xl font-extrabold text-rose-600">
+            {complaints.length}
           </div>
           <span className="text-[11px] text-slate-500 font-medium">
-            3 Monitored Products
+            1 In Investigation
           </span>
         </div>
 
         <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-1">
           <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-            Total Standards Indexed
+            Standards Indexed
           </span>
           <div className="text-2xl font-extrabold text-slate-900 dark:text-white">
             7,000+
@@ -155,7 +176,7 @@ export default function UserDashboardPage() {
 
         <div className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-1">
           <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-            Unread Notifications
+            Pending Notifications
           </span>
           <div className="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-1.5">
             <Bell className="w-5 h-5 text-amber-500" />
@@ -167,19 +188,19 @@ export default function UserDashboardPage() {
         </div>
       </div>
 
-      {/* Quick Action Cards */}
+      {/* Quick Action Tools */}
       <div className="space-y-3">
         <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-          Quick Actions & Tools
+          Citizen & Industry Services
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {quickActions.map((act, i) => {
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {quickTools.map((act, i) => {
             const Icon = act.icon;
             return (
               <Link
                 key={i}
                 href={act.href}
-                className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-amber-500/50 hover:shadow-md transition-all group flex flex-col justify-between space-y-4"
+                className="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-blue-500/50 hover:shadow-md transition-all group flex flex-col justify-between space-y-4"
               >
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
@@ -192,15 +213,15 @@ export default function UserDashboardPage() {
                       {act.badge}
                     </span>
                   </div>
-                  <h4 className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors">
+                  <h4 className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
                     {act.title}
                   </h4>
                   <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                     {act.desc}
                   </p>
                 </div>
-                <div className="flex items-center text-xs font-semibold text-amber-600 dark:text-amber-400 group-hover:translate-x-1 transition-transform">
-                  <span>Open Tool</span>
+                <div className="flex items-center text-xs font-semibold text-blue-600 dark:text-blue-400 group-hover:translate-x-1 transition-transform">
+                  <span>Access Service</span>
                   <ArrowRight className="w-3.5 h-3.5 ml-1" />
                 </div>
               </Link>
@@ -209,20 +230,20 @@ export default function UserDashboardPage() {
         </div>
       </div>
 
-      {/* Active Applications & Recent Notifications Grid */}
+      {/* Applications & Complaints Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Active Applications */}
-        <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-4">
+        <div className="p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <Clock className="w-4 h-4 text-emerald-500" />
-              Active Applications
+              Active Licence Applications
             </h3>
             <Link
               href="/applications"
-              className="text-xs font-semibold text-amber-600 hover:underline"
+              className="text-xs font-semibold text-blue-600 hover:underline"
             >
-              View All
+              Track All
             </Link>
           </div>
 
@@ -230,14 +251,14 @@ export default function UserDashboardPage() {
             {applications.slice(0, 3).map((app) => (
               <Link
                 key={app.id}
-                href={`/applications/${app.application_number}`}
-                className="p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 hover:border-amber-500/40 transition block space-y-1.5"
+                href={`/applications?track=${app.application_number}`}
+                className="p-4 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-950 hover:border-blue-500/40 transition block space-y-1.5"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-xs font-bold text-slate-900 dark:text-white">
                     {app.application_number}
                   </span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-600 border border-blue-500/20">
                     {app.current_status}
                   </span>
                 </div>
@@ -252,45 +273,47 @@ export default function UserDashboardPage() {
           </div>
         </div>
 
-        {/* Recent Notifications */}
-        <div className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-4">
+        {/* Complaints Grievances */}
+        <div className="p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <Bell className="w-4 h-4 text-amber-500" />
-              Recent Announcements & Alerts
+              <AlertTriangle className="w-4 h-4 text-rose-500" />
+              Quality Grievances & Complaints
             </h3>
             <Link
-              href="/notifications"
-              className="text-xs font-semibold text-amber-600 hover:underline"
+              href="/complaints"
+              className="text-xs font-semibold text-rose-600 hover:underline"
             >
-              Notification Center
+              File New
             </Link>
           </div>
 
           <div className="space-y-3">
-            {notifications.slice(0, 3).map((n) => (
-              <div
-                key={n.id}
-                className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 space-y-1"
+            {complaints.map((c) => (
+              <Link
+                key={c.id}
+                href={`/applications?track=${c.tracking_id}`}
+                className="p-4 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-950 hover:border-rose-500/40 transition block space-y-1.5"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-900 dark:text-white">
-                    {n.title}
+                  <span className="font-mono text-xs font-bold text-rose-600">
+                    {c.tracking_id}
                   </span>
-                  <span className="text-[10px] text-slate-400">
-                    {n.created_at}
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">
+                    {c.status_label}
                   </span>
                 </div>
-                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                  {n.message}
+                <p className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                  {c.product_name}
                 </p>
-              </div>
+                <span className="text-[11px] text-slate-400 block">
+                  Category: {c.category.replace("_", " ")}
+                </span>
+              </Link>
             ))}
           </div>
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 }

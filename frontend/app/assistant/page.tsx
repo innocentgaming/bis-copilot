@@ -2,6 +2,7 @@
 
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import {
   AlertCircle,
   Bot,
@@ -14,6 +15,16 @@ import {
   Mic,
   Camera,
   Layers,
+  FileText,
+  Clock,
+  AlertTriangle,
+  Settings,
+  Paperclip,
+  CheckCircle2,
+  HelpCircle,
+  Gem,
+  ShieldCheck,
+  Send,
 } from "lucide-react";
 import { chatApi } from "@/lib/api/chat";
 import { AnswerCitation, ChatRequest, ConversationDetail } from "@/types/chat";
@@ -26,13 +37,14 @@ import { useAuth } from "@/lib/auth/context";
 import { VoiceModal } from "@/components/multimodal/VoiceModal";
 import { VisionModal } from "@/components/multimodal/VisionModal";
 
-const SAMPLE_PROMPTS = [
-  "What BIS certification do I need for my product?",
-  "Find the relevant Indian Standard for electrical equipment.",
-  "How do I apply for an ISI Mark licence under Scheme-I?",
-  "What are the mandatory marking requirements under IS 1293:2019?",
-  "What documents are required for Compulsory Registration Scheme (CRS)?",
-  "What is the breaking load requirement in Clause 5.2 of IS 1786?",
+const QUICK_ACTIONS = [
+  { label: "Search an Indian Standard", query: "Find the Indian Standard for electrical appliances and plugs." },
+  { label: "How to get BIS Certification?", query: "How do I apply for an ISI Mark licence under Scheme-I?" },
+  { label: "Hallmarking information", query: "What are the mandatory marking requirements and HUID for 22K gold jewelry?" },
+  { label: "Check application status", query: "How can I check the status of my BIS application or license renewal?" },
+  { label: "File a consumer complaint", query: "How do I lodge a complaint for a counterfeit ISI mark on a product?" },
+  { label: "Find BIS service", query: "What services does BIS provide for MSMEs and foreign manufacturers?" },
+  { label: "Explain a BIS document", query: "Explain the requirements of a Quality Control Order (QCO) notification." },
 ];
 
 function extractDisplayAnswer(raw: string): string {
@@ -54,6 +66,7 @@ function extractDisplayAnswer(raw: string): string {
 function AssistantContent() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q");
+  const langParam = searchParams.get("lang");
 
   const { isAuthenticated } = useAuth();
   const { error: toastError } = useToast();
@@ -64,7 +77,9 @@ function AssistantContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [selectedCitation, setSelectedCitation] = useState<AnswerCitation | null>(null);
-  const [language, setLanguage] = useState<"en" | "hi" | "mr">("en");
+  const [language, setLanguage] = useState<"en" | "hi" | "mr">(
+    (langParam === "hi" || langParam === "mr") ? langParam : "en"
+  );
 
   // Multimodal modals
   const [voiceOpen, setVoiceOpen] = useState(false);
@@ -202,7 +217,7 @@ function AssistantContent() {
           );
         },
         async (streamErr) => {
-          console.warn("SSE stream interrupted or failed, attempting sync fallback:", streamErr);
+          console.warn("SSE stream interrupted, fallback sync:", streamErr);
           try {
             const syncRes = await chatApi.sendMessage(chatPayload);
             setIsStreaming(false);
@@ -236,7 +251,7 @@ function AssistantContent() {
                 msg.id === assistantMsgId
                   ? {
                       ...msg,
-                      content: `Unable to obtain compliance answer: ${errText}`,
+                      content: `Unable to obtain answer: ${errText}`,
                       insufficient_evidence: true,
                       isStreaming: false,
                     }
@@ -257,22 +272,57 @@ function AssistantContent() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] overflow-hidden bg-slate-50 dark:bg-slate-950">
-      {/* Sidebar for Conversations */}
+    <div className="flex h-[calc(100vh-4.5rem)] overflow-hidden bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+      {/* LEFT SIDEBAR */}
       <aside className="w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 hidden md:flex flex-col shrink-0">
         <div className="p-4 border-b border-slate-100 dark:border-slate-800 space-y-3">
           <button
             onClick={handleNewChat}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow transition"
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 text-white font-bold text-xs shadow-sm hover:opacity-95 transition"
           >
             <Plus className="w-4 h-4" />
             <span>New Consultation</span>
           </button>
         </div>
 
+        {/* Quick Navigation Links in Sidebar */}
+        <div className="p-3 border-b border-slate-100 dark:border-slate-800 space-y-1 text-xs">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2 mb-1 block">
+            AI Assistant Shortcuts
+          </span>
+          <Link
+            href="/documents"
+            className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition"
+          >
+            <FileText className="w-3.5 h-3.5 text-blue-500" />
+            <span>Document AI</span>
+          </Link>
+          <Link
+            href="/applications"
+            className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition"
+          >
+            <Clock className="w-3.5 h-3.5 text-amber-500" />
+            <span>Application Status</span>
+          </Link>
+          <Link
+            href="/complaints"
+            className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition"
+          >
+            <AlertTriangle className="w-3.5 h-3.5 text-rose-500" />
+            <span>Complaints</span>
+          </Link>
+          <Link
+            href="/hallmarking"
+            className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition"
+          >
+            <Gem className="w-3.5 h-3.5 text-yellow-500" />
+            <span>Hallmarking HUID</span>
+          </Link>
+        </div>
+
         {/* Conversation list */}
         <div className="flex-1 overflow-y-auto p-3 space-y-1">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1 block">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2 mb-1 block">
             Recent Inquiries
           </span>
           {conversations.length === 0 ? (
@@ -286,7 +336,7 @@ function AssistantContent() {
                 onClick={() => handleSelectConversation(c.id)}
                 className={`w-full text-left p-2.5 rounded-xl text-xs font-medium truncate transition flex items-center gap-2 ${
                   activeConvId === c.id
-                    ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold"
+                    ? "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 font-bold"
                     : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                 }`}
               >
@@ -298,18 +348,18 @@ function AssistantContent() {
         </div>
       </aside>
 
-      {/* Main Chat Area */}
+      {/* MAIN CHAT AREA */}
       <main className="flex-1 flex flex-col h-full overflow-hidden relative">
         {/* Chat Header */}
         <header className="h-14 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xs px-6 flex items-center justify-between z-10 shrink-0">
-          <div className="flex items-center gap-2.5">
-            <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-700 to-indigo-800 text-white flex items-center justify-center font-bold shadow-md">
               <Bot className="w-4 h-4" />
             </div>
             <div>
               <h2 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
-                <span>BIS AI Assistant</span>
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span>BIS AI</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               </h2>
               <span className="text-[10px] text-slate-400">
                 Grounding: 7,000+ Indian Standards • Scheme-I • CRS • Hallmarking
@@ -320,7 +370,7 @@ function AssistantContent() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setVoiceOpen(true)}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 transition"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-400 hover:bg-amber-500/20 transition"
               title="Voice Assistant (Hindi / English)"
             >
               <Mic className="w-3.5 h-3.5" />
@@ -334,37 +384,53 @@ function AssistantContent() {
               <Camera className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Inspect Label</span>
             </button>
+            <Link
+              href="/documents"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-purple-500/10 text-purple-600 dark:text-purple-400 hover:bg-purple-500/20 transition"
+              title="Upload Document AI"
+            >
+              <Paperclip className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Document AI</span>
+            </Link>
           </div>
         </header>
 
         {/* Message Stream */}
         <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
           {messages.length === 0 ? (
-            <div className="max-w-2xl mx-auto py-8 text-center space-y-6">
-              <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-amber-500 to-amber-700 text-white flex items-center justify-center mx-auto shadow-xl">
+            <div className="max-w-3xl mx-auto py-8 text-center space-y-6 animate-in fade-in-50">
+              <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-blue-700 to-indigo-800 text-white flex items-center justify-center mx-auto shadow-xl">
                 <Bot className="w-8 h-8" />
               </div>
               <div className="space-y-2">
-                <h3 className="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white">
-                  How can I help with Indian Standards & BIS Services?
+                <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white">
+                  Hello! I&apos;m BIS AI.
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
-                  Ask technical requirements, mandatory QCOs, application procedures, test parameters, or speak in Hindi/English.
+                <p className="text-xs md:text-sm text-slate-600 dark:text-slate-400 max-w-lg mx-auto leading-relaxed">
+                  I can help you with Indian Standards, BIS certification, hallmarking, consumer complaints, compliance requirements and BIS services.
                 </p>
               </div>
 
-              {/* Sample Prompts */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left pt-2">
-                {SAMPLE_PROMPTS.map((p, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => handleSendMessage(p)}
-                    className="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-amber-500/50 hover:shadow-sm text-xs font-medium text-slate-700 dark:text-slate-300 transition"
-                  >
-                    &quot;{p}&quot;
-                  </button>
-                ))}
+              {/* Quick action buttons */}
+              <div className="space-y-2 pt-2">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                  Quick Action Inquiries:
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left max-w-2xl mx-auto">
+                  {QUICK_ACTIONS.map((item, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => handleSendMessage(item.query)}
+                      className="p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-blue-500/50 hover:shadow-sm text-xs font-medium text-slate-700 dark:text-slate-300 transition flex items-center justify-between"
+                    >
+                      <span className="font-bold text-slate-900 dark:text-white truncate">
+                        {item.label}
+                      </span>
+                      <Sparkles className="w-3.5 h-3.5 text-blue-500 shrink-0 ml-2" />
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           ) : (
@@ -383,7 +449,7 @@ function AssistantContent() {
         </div>
 
         {/* Input Bar */}
-        <div className="p-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xs border-t border-slate-200 dark:border-slate-800">
+        <div className="p-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-800">
           <div className="max-w-4xl mx-auto">
             <ChatInput
               onSend={handleSendMessage}
@@ -417,7 +483,7 @@ function AssistantContent() {
 
 export default function AssistantPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center text-xs text-slate-400">Loading AI Assistant...</div>}>
+    <Suspense fallback={<div className="p-8 text-center text-xs text-slate-400">Loading BIS AI Assistant...</div>}>
       <AssistantContent />
     </Suspense>
   );

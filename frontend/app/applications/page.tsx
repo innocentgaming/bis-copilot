@@ -1,413 +1,313 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
   Clock,
   Search,
-  PlusCircle,
   CheckCircle2,
   AlertTriangle,
-  ArrowRight,
-  Filter,
   FileText,
-  Calendar,
-  Building2,
-  Bot,
-  RefreshCw,
+  Building,
+  User,
+  ShieldCheck,
+  ArrowRight,
+  Bell,
+  Sparkles,
 } from "lucide-react";
 import { platformApi } from "@/lib/api/platform";
-import { BISApplication } from "@/types/bis_platform";
+import { BISApplication, ComplaintRecord } from "@/types/bis_platform";
 import { ApplicationTimeline } from "@/components/applications/ApplicationTimeline";
-import { useToast } from "@/components/common/Toast";
-import { Footer } from "@/components/layout/Footer";
 
-export default function ApplicationsTrackingPage() {
-  const [applications, setApplications] = useState<BISApplication[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedApp, setSelectedApp] = useState<BISApplication | null>(null);
-  const [searchNum, setSearchNum] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+function ApplicationsTrackerContent() {
+  const searchParams = useSearchParams();
+  const trackParam = searchParams.get("track") || "";
 
-  // New Application Modal / Drawer state
-  const [isCreating, setIsCreating] = useState(false);
-  const [newServiceName, setNewServiceName] = useState("Product Certification Scheme (ISI Mark - Scheme I)");
-  const [newStandard, setNewStandard] = useState("IS 1293:2019");
-  const [newApplicant, setNewApplicant] = useState("");
-  const [newCompany, setNewCompany] = useState("");
-  const [newEmail, setNewEmail] = useState("");
-  const [newPhone, setNewPhone] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const [activeTab, setActiveTab] = useState<"application" | "complaint">("application");
+  const [queryInput, setQueryInput] = useState(trackParam || "BIS-2026-004819");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const { success: toastSuccess, error: toastError } = useToast();
+  const [applicationResult, setApplicationResult] = useState<BISApplication | null>(null);
+  const [complaintResult, setComplaintResult] = useState<ComplaintRecord | null>(null);
 
-  const loadApplications = async () => {
+  const handleTrack = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!queryInput.trim()) return;
+
     setLoading(true);
-    try {
-      const data = await platformApi.listApplications(statusFilter);
-      setApplications(data);
-      if (data.length > 0 && !selectedApp) {
-        setSelectedApp(data[0]);
+    setErrorMsg(null);
+    setApplicationResult(null);
+    setComplaintResult(null);
+
+    const q = queryInput.trim();
+
+    if (q.toUpperCase().startsWith("BIS-CMP") || activeTab === "complaint") {
+      try {
+        const comp = await platformApi.getComplaint(q);
+        setComplaintResult(comp);
+        setActiveTab("complaint");
+      } catch {
+        setErrorMsg(`Complaint reference '${q}' not found in registry.`);
+      } finally {
+        setLoading(false);
       }
-    } catch {
-      // fallback
-    } finally {
-      setLoading(false);
+    } else {
+      try {
+        const app = await platformApi.trackApplication(q);
+        setApplicationResult(app);
+        setActiveTab("application");
+      } catch {
+        setErrorMsg(`Application number '${q}' not found in registry.`);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
   useEffect(() => {
-    loadApplications();
-  }, [statusFilter]);
-
-  const handleTrackSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchNum.trim()) return;
-
-    try {
-      const res = await platformApi.trackApplication(searchNum.trim());
-      setSelectedApp(res);
-      toastSuccess(`Found application ${res.application_number}`);
-    } catch {
-      toastError(`Application '${searchNum}' not found. Verify format e.g. BIS-2026-000123.`);
+    if (trackParam) {
+      setQueryInput(trackParam);
+      handleTrack();
+    } else {
+      handleTrack();
     }
-  };
-
-  const handleCreateSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newApplicant || !newCompany || !newEmail) return;
-
-    setSubmitting(true);
-    try {
-      const created = await platformApi.submitApplication({
-        service_name: newServiceName,
-        standard_number: newStandard,
-        applicant_name: newApplicant,
-        company_name: newCompany,
-        contact_email: newEmail,
-        contact_phone: newPhone,
-      });
-
-      setApplications([created, ...applications]);
-      setSelectedApp(created);
-      setIsCreating(false);
-      setNewApplicant("");
-      setNewCompany("");
-      setNewEmail("");
-      setNewPhone("");
-      toastSuccess(`Application ${created.application_number} submitted successfully!`);
-    } catch {
-      toastError("Failed to submit application.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  }, [trackParam]);
 
   return (
-    <div className="space-y-8 pb-12">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-2">
-            <Clock className="w-3.5 h-3.5" />
-            Live Status & Workflow Tracking
-          </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            BIS Application Tracking & Timeline
-          </h1>
-          <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
-            Track verification progress, factory audit schedules, sample testing, and licence grants.
-          </p>
+    <div className="space-y-8 pb-16">
+      {/* Header Banner */}
+      <div className="p-8 md:p-12 rounded-3xl bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white shadow-xl space-y-4">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 backdrop-blur-md text-xs font-bold text-blue-200 border border-white/20">
+          <Clock className="w-3.5 h-3.5 text-blue-400" />
+          <span>Central Status Tracking System</span>
+        </div>
+        <h1 className="text-3xl md:text-5xl font-black tracking-tight">
+          Track BIS Applications & Quality Complaints
+        </h1>
+        <p className="text-xs md:text-sm text-blue-100 max-w-2xl leading-relaxed">
+          Real-time lifecycle inspection updates, officer review milestones, and statutory action alerts for Scheme-I, CRS, Hallmarking, and Grievances.
+        </p>
+      </div>
+
+      {/* Tracker Search Box */}
+      <div className="p-6 md:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-5">
+        <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+          <button
+            onClick={() => {
+              setActiveTab("application");
+              setQueryInput("BIS-2026-004819");
+            }}
+            className={`text-xs font-bold pb-2 transition border-b-2 -mb-3.5 ${
+              activeTab === "application"
+                ? "border-blue-600 text-blue-600 dark:text-blue-400"
+                : "border-transparent text-slate-400 hover:text-slate-600"
+            }`}
+          >
+            Track License Application
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab("complaint");
+              setQueryInput("BIS-CMP-2026-004812");
+            }}
+            className={`text-xs font-bold pb-2 transition border-b-2 -mb-3.5 ${
+              activeTab === "complaint"
+                ? "border-blue-600 text-blue-600 dark:text-blue-400"
+                : "border-transparent text-slate-400 hover:text-slate-600"
+            }`}
+          >
+            Track Consumer Grievance
+          </button>
         </div>
 
-        <button
-          onClick={() => setIsCreating(true)}
-          className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow transition flex items-center gap-1.5 self-start"
-        >
-          <PlusCircle className="w-4 h-4" />
-          <span>New Application</span>
-        </button>
-      </div>
-
-      {/* Track Bar */}
-      <div className="p-6 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white shadow-xl border border-slate-700/60 space-y-3">
-        <h3 className="font-bold text-sm">
-          Track by Application Number
-        </h3>
-        <form onSubmit={handleTrackSubmit} className="flex flex-col sm:flex-row gap-2 max-w-xl">
-          <input
-            type="text"
-            value={searchNum}
-            onChange={(e) => setSearchNum(e.target.value)}
-            placeholder="Enter Application Number (e.g. BIS-2026-000123)..."
-            className="flex-1 px-4 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700 text-white placeholder:text-slate-400 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/60 font-mono"
-          />
-          <button
-            type="submit"
-            className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition shrink-0"
-          >
-            Track Status
-          </button>
-        </form>
-      </div>
-
-      {/* Main Grid: List on Left, Selected App on Right */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Applications List */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              Submitted Applications
-            </span>
-            <span className="text-xs text-slate-500">{applications.length} Total</span>
+        <form onSubmit={handleTrack} className="space-y-3">
+          <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+            {activeTab === "application"
+              ? "Enter Application / Registration Number"
+              : "Enter Complaint Tracking Reference (BIS-CMP-XXXXXX)"}
+          </label>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
+              <input
+                type="text"
+                value={queryInput}
+                onChange={(e) => setQueryInput(e.target.value)}
+                placeholder={
+                  activeTab === "application"
+                    ? "e.g. BIS-2026-004819"
+                    : "e.g. BIS-CMP-2026-004812"
+                }
+                className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs font-mono font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-500"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading || !queryInput.trim()}
+              className="px-6 py-3 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow transition disabled:opacity-50"
+            >
+              {loading ? "Searching..." : "Track Status"}
+            </button>
           </div>
 
-          <div className="space-y-2.5">
-            {applications.map((app) => (
-              <div
-                key={app.id}
-                onClick={() => setSelectedApp(app)}
-                className={`p-4 rounded-xl border transition-all cursor-pointer ${
-                  selectedApp?.application_number === app.application_number
-                    ? "border-amber-500 bg-amber-500/5 dark:bg-amber-500/10 shadow-sm"
-                    : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300"
-                }`}
+          {/* Quick demo chips */}
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            <span className="text-[11px] font-bold text-slate-400">Sample Tracking IDs:</span>
+            {["BIS-2026-004819", "BIS-2026-001092", "BIS-CMP-2026-004812"].map((id) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => {
+                  setQueryInput(id);
+                  if (id.startsWith("BIS-CMP")) setActiveTab("complaint");
+                  else setActiveTab("application");
+                }}
+                className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-mono font-bold hover:bg-slate-200 transition"
               >
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs font-bold text-slate-900 dark:text-white">
-                    {app.application_number}
-                  </span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                    {app.current_status}
-                  </span>
-                </div>
-                <h4 className="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-1 truncate">
-                  {app.service_name}
-                </h4>
-                <div className="flex items-center justify-between pt-2 text-[11px] text-slate-400">
-                  <span className="truncate">{app.company_name}</span>
-                  <span className="font-mono">{app.standard_number || "General"}</span>
-                </div>
-              </div>
+                {id}
+              </button>
             ))}
           </div>
-        </div>
+        </form>
 
-        {/* Selected Application Timeline & Overview */}
-        <div className="lg:col-span-2">
-          {selectedApp ? (
-            <div className="p-6 md:p-7 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm space-y-6">
-              {/* Header Info */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-100 dark:border-slate-800">
-                <div className="space-y-1">
-                  <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400">
-                    {selectedApp.application_number}
-                  </span>
-                  <h2 className="text-lg font-extrabold text-slate-900 dark:text-white">
-                    {selectedApp.service_name}
-                  </h2>
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                    <span>Applicant: {selectedApp.applicant_name}</span>
-                    <span>•</span>
-                    <span>{selectedApp.company_name}</span>
-                  </div>
-                </div>
-
-                <div className="text-right sm:self-center">
-                  <span className="text-[10px] text-slate-400 uppercase font-bold block">
-                    Current Milestone
-                  </span>
-                  <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 inline-block mt-0.5">
-                    {selectedApp.current_status}
-                  </span>
-                </div>
-              </div>
-
-              {/* Application Details Summary */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 rounded-xl bg-slate-50/70 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 text-xs">
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold block">
-                    Standard (IS)
-                  </span>
-                  <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">
-                    {selectedApp.standard_number || "N/A"}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold block">
-                    Assigned Division
-                  </span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">
-                    {selectedApp.assigned_department}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold block">
-                    Contact Email
-                  </span>
-                  <span className="font-mono text-slate-800 dark:text-slate-200">
-                    {selectedApp.contact_email}
-                  </span>
-                </div>
-              </div>
-
-              {/* Status Timeline */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                  Verification & Inspection Timeline
-                </h3>
-                <ApplicationTimeline steps={selectedApp.timeline} />
-              </div>
-
-              {/* Remarks */}
-              {selectedApp.remarks && (
-                <div className="p-4 rounded-xl bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/20 text-xs text-blue-900 dark:text-blue-200">
-                  <strong>Auditor Remarks:</strong> {selectedApp.remarks}
-                </div>
-              )}
-
-              {/* Actions */}
-              <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
-                <Link
-                  href={`/chat?q=${encodeURIComponent(
-                    `What are the next steps for my application ${selectedApp.application_number} currently at status ${selectedApp.current_status}?`
-                  )}`}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold shadow transition"
-                >
-                  <Bot className="w-3.5 h-3.5" />
-                  Ask AI About Status
-                </Link>
-                <span className="text-slate-400 text-[11px]">
-                  Updated real-time from BIS scrutiny server
-                </span>
-              </div>
-            </div>
-          ) : (
-            <div className="p-12 text-center text-xs text-slate-400 border border-dashed rounded-2xl">
-              Select an application to view its tracking timeline
-            </div>
-          )}
-        </div>
+        {errorMsg && (
+          <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-xs text-rose-700 dark:text-rose-400 flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 shrink-0" />
+            <span>{errorMsg}</span>
+          </div>
+        )}
       </div>
 
-      {/* New Application Modal */}
-      {isCreating && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
-            <h3 className="font-bold text-base text-slate-900 dark:text-white">
-              Submit New BIS Scheme Application
-            </h3>
-            <form onSubmit={handleCreateSubmit} className="space-y-3 text-xs">
+      {/* Application Tracking Result */}
+      {applicationResult && (
+        <div className="space-y-6 animate-in fade-in-50">
+          {/* Metadata Card */}
+          <div className="p-6 md:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100 dark:border-slate-800">
               <div>
-                <label className="font-semibold text-slate-500 block mb-1">
-                  BIS Scheme / Service
-                </label>
-                <select
-                  value={newServiceName}
-                  onChange={(e) => setNewServiceName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
-                >
-                  <option>Product Certification Scheme (ISI Mark - Scheme I)</option>
-                  <option>Compulsory Registration Scheme (CRS)</option>
-                  <option>Hallmarking Scheme for Gold & Silver</option>
-                  <option>Foreign Manufacturers Certification Scheme (FMCS)</option>
-                  <option>Tatkal Licensing Scheme</option>
-                </select>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono font-black text-blue-600 dark:text-blue-400">
+                    {applicationResult.application_number}
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-500/10 text-blue-600 border border-blue-500/20">
+                    {applicationResult.current_status}
+                  </span>
+                </div>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white mt-1">
+                  {applicationResult.service_name}
+                </h2>
               </div>
 
-              <div>
-                <label className="font-semibold text-slate-500 block mb-1">
-                  Indian Standard (IS Number)
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={newStandard}
-                  onChange={(e) => setNewStandard(e.target.value)}
-                  placeholder="e.g. IS 1293:2019"
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white font-mono"
-                />
-              </div>
+              <Link
+                href={`/assistant?q=${encodeURIComponent(`What is the current status of application ${applicationResult.application_number}?`)}`}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-700 dark:text-purple-300 text-xs font-bold border border-purple-500/20 transition shrink-0"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Ask BIS AI about this file</span>
+              </Link>
+            </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="font-semibold text-slate-500 block mb-1">
-                    Applicant Name
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={newApplicant}
-                    onChange={(e) => setNewApplicant(e.target.value)}
-                    placeholder="e.g. Anand Verma"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="font-semibold text-slate-500 block mb-1">
-                    Company Name
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={newCompany}
-                    onChange={(e) => setNewCompany(e.target.value)}
-                    placeholder="e.g. Apex Power Ltd"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
-                  />
-                </div>
+            {/* Grid details */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-1">
+                <span className="text-slate-400 block font-medium">Applicant Name</span>
+                <strong className="text-slate-900 dark:text-white block truncate">
+                  {applicationResult.applicant_name}
+                </strong>
               </div>
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-1">
+                <span className="text-slate-400 block font-medium">Enterprise / Company</span>
+                <strong className="text-slate-900 dark:text-white block truncate">
+                  {applicationResult.company_name}
+                </strong>
+              </div>
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-1">
+                <span className="text-slate-400 block font-medium">Indian Standard</span>
+                <strong className="text-slate-900 dark:text-white font-mono block">
+                  {applicationResult.standard_number || "Scheme General"}
+                </strong>
+              </div>
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-1">
+                <span className="text-slate-400 block font-medium">Assigned Branch</span>
+                <strong className="text-slate-900 dark:text-white block truncate">
+                  {applicationResult.assigned_department}
+                </strong>
+              </div>
+            </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="font-semibold text-slate-500 block mb-1">
-                    Contact Email
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={newEmail}
-                    onChange={(e) => setNewEmail(e.target.value)}
-                    placeholder="email@company.com"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="font-semibold text-slate-500 block mb-1">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    value={newPhone}
-                    onChange={(e) => setNewPhone(e.target.value)}
-                    placeholder="+91 98765 00000"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-3">
-                <button
-                  type="button"
-                  onClick={() => setIsCreating(false)}
-                  className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition font-medium"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold transition shadow"
-                >
-                  {submitting ? "Submitting..." : "Submit Application"}
-                </button>
-              </div>
-            </form>
+            {/* Timeline */}
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-4">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                Inspection & Verification Timeline
+              </h3>
+              <ApplicationTimeline steps={applicationResult.timeline} />
+            </div>
           </div>
         </div>
       )}
 
-      <Footer />
+      {/* Complaint Tracking Result */}
+      {complaintResult && (
+        <div className="p-6 md:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6 animate-in fade-in-50">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono font-black text-rose-600">
+                  {complaintResult.tracking_id}
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/10 text-amber-600 border border-amber-500/20">
+                  {complaintResult.status_label}
+                </span>
+              </div>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white mt-1">
+                {complaintResult.product_name}
+              </h2>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+            <div>
+              <span className="text-slate-400 block">Category</span>
+              <strong className="text-slate-900 dark:text-white capitalize">
+                {complaintResult.category.replace("_", " ")}
+              </strong>
+            </div>
+            <div>
+              <span className="text-slate-400 block">Seller / Store</span>
+              <strong className="text-slate-900 dark:text-white">
+                {complaintResult.seller_name || "Unspecified"}
+              </strong>
+            </div>
+            <div>
+              <span className="text-slate-400 block">Date Lodged</span>
+              <strong className="text-slate-900 dark:text-white">
+                {new Date(complaintResult.created_at).toLocaleDateString()}
+              </strong>
+            </div>
+            <div>
+              <span className="text-slate-400 block">Complainant</span>
+              <strong className="text-slate-900 dark:text-white">
+                {complaintResult.complainant_name}
+              </strong>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-xs text-amber-900 dark:text-amber-200 space-y-1">
+            <strong className="block font-bold">Investigation Next Step:</strong>
+            <p>{complaintResult.next_action}</p>
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+export default function ApplicationsTrackerPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center text-xs text-slate-400">Loading Application Tracker...</div>}>
+      <ApplicationsTrackerContent />
+    </Suspense>
   );
 }

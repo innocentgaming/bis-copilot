@@ -8,6 +8,10 @@ import {
   VoiceQueryResponse,
   VisionQueryResponse,
   DocumentAIResponse,
+  ComplaintRecord,
+  ComplaintCreatePayload,
+  HUIDVerificationResult,
+  AHCCenter,
 } from "@/types/bis_platform";
 
 export const platformApi = {
@@ -17,11 +21,11 @@ export const platformApi = {
     if (params?.category && params.category !== "all") query.set("category", params.category);
     if (params?.search) query.set("search", params.search);
     const qs = query.toString();
-    return apiClient.get<BISService[]>(`/services${qs ? `?${qs}` : ""}`);
+    return apiClient.get<BISService[]>(`/bis-services${qs ? `?${qs}` : ""}`);
   },
 
   getService(slug: string): Promise<BISService> {
-    return apiClient.get<BISService>(`/services/${slug}`);
+    return apiClient.get<BISService>(`/bis-services/${slug}`);
   },
 
   // Applications
@@ -49,6 +53,37 @@ export const platformApi = {
     contact_phone?: string;
   }): Promise<BISApplication> {
     return apiClient.post<BISApplication>("/applications", data);
+  },
+
+  // Complaints
+  fileComplaint(data: ComplaintCreatePayload): Promise<ComplaintRecord> {
+    return apiClient.post<ComplaintRecord>("/complaints", data);
+  },
+
+  getComplaint(trackingId: string): Promise<ComplaintRecord> {
+    return apiClient.get<ComplaintRecord>(`/complaints/${encodeURIComponent(trackingId.trim())}`);
+  },
+
+  listComplaints(params?: { email?: string; category?: string; status?: string }): Promise<ComplaintRecord[]> {
+    const query = new URLSearchParams();
+    if (params?.email) query.set("email", params.email);
+    if (params?.category) query.set("category", params.category);
+    if (params?.status) query.set("status", params.status);
+    const qs = query.toString();
+    return apiClient.get<ComplaintRecord[]>(`/complaints${qs ? `?${qs}` : ""}`);
+  },
+
+  // Hallmarking & HUID
+  verifyHUID(huid: string): Promise<HUIDVerificationResult> {
+    return apiClient.get<HUIDVerificationResult>(`/hallmarking/verify/${encodeURIComponent(huid.trim())}`);
+  },
+
+  listAHCCenters(params?: { state?: string; city?: string }): Promise<AHCCenter[]> {
+    const query = new URLSearchParams();
+    if (params?.state) query.set("state", params.state);
+    if (params?.city) query.set("city", params.city);
+    const qs = query.toString();
+    return apiClient.get<AHCCenter[]>(`/hallmarking/centers${qs ? `?${qs}` : ""}`);
   },
 
   // Compliance

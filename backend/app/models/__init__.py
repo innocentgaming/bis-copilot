@@ -34,6 +34,7 @@ from backend.app.models.application import Application, ApplicationStatusHistory
 from backend.app.models.faq import FAQ
 from backend.app.models.notification import Notification
 from backend.app.models.compliance import ComplianceRecord
+from backend.app.models.complaint import Complaint
 
 __all__ = [
     "Base",
@@ -66,4 +67,5 @@ __all__ = [
     "FAQ",
     "Notification",
     "ComplianceRecord",
+    "Complaint",
 ]

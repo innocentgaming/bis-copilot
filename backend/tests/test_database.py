@@ -60,6 +60,7 @@ EXPECTED_TABLES = {
     "compliance_records",
     "faqs",
     "notifications",
+    "complaints",
 }
 
 

@@ -1,3 +1,36 @@
+export type IndianLanguageCode =
+  | "en"
+  | "hi"
+  | "ta"
+  | "te"
+  | "bn"
+  | "mr"
+  | "gu"
+  | "kn"
+  | "ml"
+  | "pa"
+  | "or";
+
+export interface LanguageOption {
+  code: IndianLanguageCode;
+  label: string;
+  nativeLabel: string;
+}
+
+export const SUPPORTED_LANGUAGES: LanguageOption[] = [
+  { code: "en", label: "English", nativeLabel: "English" },
+  { code: "hi", label: "Hindi", nativeLabel: "हिन्दी" },
+  { code: "ta", label: "Tamil", nativeLabel: "தமிழ்" },
+  { code: "te", label: "Telugu", nativeLabel: "తెలుగు" },
+  { code: "bn", label: "Bengali", nativeLabel: "বাংলা" },
+  { code: "mr", label: "Marathi", nativeLabel: "मराठी" },
+  { code: "gu", label: "Gujarati", nativeLabel: "ગુજરાતી" },
+  { code: "kn", label: "Kannada", nativeLabel: "ಕನ್ನಡ" },
+  { code: "ml", label: "Malayalam", nativeLabel: "മലയാളം" },
+  { code: "pa", label: "Punjabi", nativeLabel: "ਪੰਜਾਬੀ" },
+  { code: "or", label: "Odia", nativeLabel: "ଓଡ଼ିଆ" },
+];
+
 export interface BISService {
   name: string;
   slug: string;
@@ -36,6 +69,78 @@ export interface BISApplication {
   created_at: string;
   remarks?: string;
   timeline: ApplicationTimelineStep[];
+}
+
+export interface ComplaintCreatePayload {
+  category: string;
+  product_name: string;
+  brand_name?: string;
+  batch_number?: string;
+  seller_name?: string;
+  seller_address?: string;
+  is_number?: string;
+  huid_number?: string;
+  license_number?: string;
+  description: string;
+  evidence_urls?: string[];
+  complainant_name: string;
+  complainant_email: string;
+  complainant_phone?: string;
+}
+
+export interface ComplaintRecord {
+  id: string;
+  tracking_id: string;
+  category: string;
+  product_name: string;
+  brand_name?: string;
+  batch_number?: string;
+  seller_name?: string;
+  seller_address?: string;
+  is_number?: string;
+  huid_number?: string;
+  license_number?: string;
+  description: string;
+  evidence_urls: string[];
+  complainant_name: string;
+  complainant_email: string;
+  complainant_phone?: string;
+  status: string;
+  status_label: string;
+  next_action: string;
+  resolution_notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface HUIDVerificationResult {
+  is_valid: boolean;
+  huid: string;
+  article_type?: string;
+  metal_type?: string;
+  purity_fineness?: string;
+  purity_karat?: string;
+  ahc_center_name?: string;
+  ahc_center_number?: string;
+  jeweler_name?: string;
+  jeweler_registration_number?: string;
+  hallmarking_date?: string;
+  applicable_standard: string;
+  status: string;
+  verification_notes: string;
+  consumer_guidance: string[];
+}
+
+export interface AHCCenter {
+  center_id: string;
+  name: string;
+  address: string;
+  city: string;
+  state: string;
+  pincode: string;
+  recognition_status: string;
+  contact_email: string;
+  phone: string;
 }
 
 export interface ComplianceChecklistItem {
